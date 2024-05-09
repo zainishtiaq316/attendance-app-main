@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:studentattendance/Signup_Signin_Screen/splash.dart';
+import 'package:studentattendance/screens/Profile/edit_profile.dart';
 import 'package:studentattendance/screens/Profile/helpScreen.dart';
 import 'package:studentattendance/screens/Profile/myaccount.dart';
 import 'package:studentattendance/utils/color_utils.dart';
@@ -132,10 +133,15 @@ class _SettingScreenState extends State<SettingScreen> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      Icon(
-                                        Icons.edit,
-                                        size: 30,
-                                        color: Colors.green.shade900,
+                                      GestureDetector(
+                                        onTap:(){
+                                          Navigator.push(context, MaterialPageRoute(builder: (context)=> EditProfileScreen()));
+                                        },
+                                        child: Icon(
+                                          Icons.edit,
+                                          size: 30,
+                                          color: Colors.green.shade900,
+                                        ),
                                       )
                                     ],
                                   ),
