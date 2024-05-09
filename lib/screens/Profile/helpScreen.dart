@@ -23,7 +23,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
           style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () {
             //passing this to a route
             Navigator.of(context).pop();
@@ -34,6 +34,8 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
         children: [
           ExpansionTile(
             title: Text('How do I create an account?'),
+            iconColor: kPColor,
+            collapsedIconColor: kPColor,
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -47,6 +49,8 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
           ),
           ExpansionTile(
             title: Text('How can I mark my attendance?'),
+            iconColor: kPColor,
+            collapsedIconColor: kPColor,
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -60,6 +64,8 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
           ),
           ExpansionTile(
             title: Text('Can I view my attendance records using the app?'),
+            iconColor: kPColor,
+            collapsedIconColor: kPColor,
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -73,6 +79,8 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
           ),
           ExpansionTile(
             title: Text('Is it possible to edit my profile picture?'),
+            iconColor: kPColor,
+            collapsedIconColor: kPColor,
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -86,6 +94,8 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
           ),
           ExpansionTile(
             title: Text('Can I mark attendance more than once in a day?'),
+            iconColor: kPColor,
+            collapsedIconColor: kPColor,
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -99,6 +109,8 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
           ),
           ExpansionTile(
             title: Text('Can I delete my attendance record?'),
+            iconColor: kPColor,
+            collapsedIconColor: kPColor,
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -112,6 +124,8 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
           ),
           ExpansionTile(
             title: Text('How can I request leave using the app?'),
+            iconColor: kPColor,
+            collapsedIconColor: kPColor,
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -124,6 +138,8 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
             ],
           ),
           ExpansionTile(
+            iconColor: kPColor,
+            collapsedIconColor: kPColor,
             title: Text(
               'Developer Contacts',
               style: TextStyle(color: Colors.black),
@@ -132,7 +148,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
               ListTile(
                 title: Text(
                   'Contact with Developer',
-                  style: TextStyle(color: Colors.blue),
+                  style: TextStyle(color: kPColor),
                 ),
                 onTap: () {
                   Navigator.push(

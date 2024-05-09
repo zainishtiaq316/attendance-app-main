@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:studentattendance/Signup_Signin_Screen/splash.dart';
+import 'package:studentattendance/screens/Profile/helpScreen.dart';
 import 'package:studentattendance/screens/Profile/myaccount.dart';
 import 'package:studentattendance/utils/color_utils.dart';
 
@@ -256,39 +257,46 @@ class _SettingScreenState extends State<SettingScreen> {
                               Divider(
                                 color: Colors.grey.shade300,
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 15, left: 15, right: 15, bottom: 15),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.10,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.05,
-                                      decoration: BoxDecoration(
-                                          color: Colors.grey,
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      child: Icon(
-                                        Icons.help_center,
-                                        color: Colors.white,
+                              GestureDetector(
+
+                                onTap:(){
+
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> HelpCenterScreen()));
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 15, left: 15, right: 15, bottom: 15),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: MediaQuery.of(context).size.width *
+                                            0.10,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.05,
+                                        decoration: BoxDecoration(
+                                            color: Colors.grey,
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        child: Icon(
+                                          Icons.help_center,
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      "Help Center",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                    Spacer(),
-                                    Icon(Icons.arrow_forward_ios)
-                                  ],
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        "Help Center",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      Spacer(),
+                                      Icon(Icons.arrow_forward_ios)
+                                    ],
+                                  ),
                                 ),
                               ),
                               Divider(

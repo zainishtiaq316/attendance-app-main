@@ -97,7 +97,7 @@ class DeveloperContactPage extends StatelessWidget {
                   children: [
                     Icon(Icons.mail, color: Colors.white, size: 23,),
                     SizedBox(width: 5,),
-                    Text("Make a Email", style: TextStyle(color: Colors.white),),
+                    Text("Email", style: TextStyle(color: Colors.white),),
                   ],
                 ),
               )),
@@ -127,13 +127,55 @@ class DeveloperContactPage extends StatelessWidget {
                   children: [
                     Icon(Icons.phone, color: Colors.white, size: 23,),
                     SizedBox(width: 5,),
-                    Text("Make a Call", style: TextStyle(color: Colors.white),),
+                    Text("Call", style: TextStyle(color: Colors.white),),
                   ],
                 ),
               )),
-          )
+          ),
+
+            SizedBox(height: 10.0),
+        
+            GestureDetector(
+            onTap: () async {
+             await sendMessageOnWhatsApp();
+            },
+           child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height*0.05,
+              decoration: BoxDecoration(color: kPColor, borderRadius: BorderRadius.circular(30)),
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.mail, color: Colors.white, size: 23,),
+                    SizedBox(width: 5,),
+                    Text("WhatsApp", style: TextStyle(color: Colors.white),),
+                  ],
+                ),
+              )),
+          
+          ),
+          
         ]),
       ),
     );
   }
+   static Future<void> sendMessageOnWhatsApp()async{
+
+
+    final number = "+923028163676";
+    final message = "Hello Zain Ishtiaq ";
+
+    final url = 'https://wa.me/$number?text=${Uri.encodeComponent(message)}';
+
+    // ignore: deprecated_member_use
+    if(await canLaunch(url)){
+      
+      // ignore: deprecated_member_use
+      await launch(url);
+    }else{
+
+      throw 'Could not launch $url';
+    }
+   }
 }
