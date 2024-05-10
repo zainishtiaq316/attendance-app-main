@@ -1,8 +1,13 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:studentattendance/Signup_Signin_Screen/splash.dart';
 import 'package:studentattendance/screens/Profile/Profile_Screen.dart';
+import 'package:studentattendance/screens/Profile/developer_contact_drawer.dart';
 import 'package:studentattendance/utils/color_utils.dart';
+import 'package:studentattendance/utils/loadingIndicator.dart';
 
 import '../models/usermodel.dart';
 import '../screens/Home/Home_Screen.dart';
@@ -14,7 +19,7 @@ class DrawerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
-  UserModel loggedInUser = UserModel();
+ 
   String? name = user?.displayName;
   String? imageUrl = user?.photoURL;
 
@@ -212,28 +217,33 @@ class DrawerWidget extends StatelessWidget {
                 // ),
                 
                 
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20.0,
-                  ),
-                  child: ListTile(
-                    titleAlignment: ListTileTitleAlignment.center,
-                    title: Text(
-                      "Contact",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600
+                GestureDetector(
+                  onTap: (){
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>DeveloperContactDrawer()));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0,
+                    ),
+                    child: ListTile(
+                      titleAlignment: ListTileTitleAlignment.center,
+                      title: Text(
+                        "Contact",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600
+                        ),
                       ),
-                    ),
-                    leading: Icon(
-                      Icons.help,
-                      color: Colors.black,
-                        weight: 12
-                    ),
-                    trailing: Icon(
-                      Icons.arrow_forward_ios,
-                     color: Colors.black,
-                        weight: 12,
+                      leading: Icon(
+                        Icons.help,
+                        color: Colors.black,
+                          weight: 12
+                      ),
+                      trailing: Icon(
+                        Icons.arrow_forward_ios,
+                       color: Colors.black,
+                          weight: 12,
+                      ),
                     ),
                   ),
                 ),
@@ -242,13 +252,22 @@ class DrawerWidget extends StatelessWidget {
                     horizontal: 20.0,
                   ),
                   child: ListTile(
-                    onTap: () async {
-                      // GoogleSignIn googleSignIn = GoogleSignIn();
-                      // FirebaseAuth _auth = FirebaseAuth.instance;
-                      // await _auth.signOut();
-                      // await googleSignIn.signOut();
-                      // Get.offAll(WelcomeScreen());
-                    },
+                    onTap: () async{
+                      // Navigator.pop(context);
+                                  AwesomeDialog(
+                                      context: context,
+                                      dialogType: DialogType.noHeader,
+                                      animType: AnimType.bottomSlide,
+                                      title: 'Logout ',
+                                      desc: 'Are you sure?',
+                                      btnCancelOnPress: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      btnOkOnPress: () async {
+                                        loader(context);
+                                        await logout(context);
+                                      }).show();
+                                },
                     titleAlignment: ListTileTitleAlignment.center,
                     title: Text(
                       "Logout",
@@ -276,4 +295,10 @@ class DrawerWidget extends StatelessWidget {
     );}
       },
     );}
+
+    Future<void> logout(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => SplashScreen()));
+  }
 }

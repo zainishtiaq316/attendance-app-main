@@ -27,18 +27,19 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
-  File? pickImage;
-  final _imgPicker = MyImagePicker();
-  final UploaderService uploaderService = UploaderService();
-  @override
-  Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
+   final _formKey = GlobalKey<FormState>();
     //editing controller
     final firstNameEditingController = new TextEditingController();
     final lastNameEditingController = new TextEditingController();
     final emailEditingController = new TextEditingController();
     final phoneNumberEditingController = new TextEditingController();
     final rollNoNumberEditingController = new TextEditingController();
+  File? pickImage;
+  final _imgPicker = MyImagePicker();
+  final UploaderService uploaderService = UploaderService();
+  @override
+  Widget build(BuildContext context) {
+   
     //first name field
     final firstNameField = TextFormField(
       autofocus: false,
@@ -279,33 +280,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ),
     );
 
-    return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-        future:
-            FirebaseFirestore.instance.collection('users').doc(user?.uid).get(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-                child: CircularProgressIndicator(
-              color: kPColor,
-            )); // Loading indicator while fetching data
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            Map<String, dynamic>? userData = snapshot.data?.data();
-            String? firstName = userData?['firstName'];
-            String? SecondName = userData?['secondName'];
-            String? email = userData?['email'];
-            String? phoneNumber = userData?['phoneNumber'];
-            String? rollNo = userData?['rollNo'];
-            String? photoURL = userData?['photoURL'];
-
-            firstNameEditingController.text = firstName.toString();
-            lastNameEditingController.text = SecondName.toString();
-            emailEditingController.text = email.toString();
-            phoneNumberEditingController.text = phoneNumber.toString();
-            rollNoNumberEditingController.text = rollNo.toString();
-            return Scaffold(
-              appBar: AppBar(
+    return Scaffold(
+      appBar: AppBar(
                 backgroundColor: kPColor,
                 elevation: 0,
                 centerTitle: true,
@@ -321,7 +297,32 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   },
                 ),
               ),
-              body: SingleChildScrollView(
+      body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+          future:
+              FirebaseFirestore.instance.collection('users').doc(user?.uid).get(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                  child: CircularProgressIndicator(
+                color: kPColor,
+              )); // Loading indicator while fetching data
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              Map<String, dynamic>? userData = snapshot.data?.data();
+              String? firstName = userData?['firstName'];
+              String? SecondName = userData?['secondName'];
+              String? email = userData?['email'];
+              String? phoneNumber = userData?['phoneNumber'];
+              String? rollNo = userData?['rollNo'];
+              String? photoURL = userData?['photoURL'];
+      
+              firstNameEditingController.text = firstName.toString();
+              lastNameEditingController.text = SecondName.toString();
+              emailEditingController.text = email.toString();
+              phoneNumberEditingController.text = phoneNumber.toString();
+              rollNoNumberEditingController.text = rollNo.toString();
+              return SingleChildScrollView(
                 padding: EdgeInsets.symmetric(vertical: 20),
                 child: Column(
                   children: [
@@ -403,6 +404,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Form(
+                        key: _formKey,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -465,10 +467,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                   ],
                 ),
-              ),
-            );
-          }
-        });
+              );
+            }
+          }),
+    );
   }
 
   void _showImageSourceModal() {

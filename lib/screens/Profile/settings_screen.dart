@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:studentattendance/Signup_Signin_Screen/splash.dart';
+import 'package:studentattendance/screens/Profile/change_email.dart';
 import 'package:studentattendance/screens/Profile/edit_profile.dart';
 import 'package:studentattendance/screens/Profile/helpScreen.dart';
+import 'package:studentattendance/screens/Profile/language_settings.dart';
 import 'package:studentattendance/screens/Profile/myaccount.dart';
 import 'package:studentattendance/utils/color_utils.dart';
 
@@ -41,119 +43,16 @@ class _SettingScreenState extends State<SettingScreen> {
               color: kPColor,
             ),
           ),
+          centerTitle: true,
         ),
-        drawer: DrawerWidget(),
-        body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-            future: FirebaseFirestore.instance
-                .collection('users')
-                .doc(user?.uid)
-                .get(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                    child: CircularProgressIndicator(
-                  color: kPColor,
-                )); // Loading indicator while fetching data
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else {
-                Map<String, dynamic>? userData = snapshot.data?.data();
-                String? firstName = userData?['firstName'];
-                String? SecondName = userData?['secondName'];
-                String? email = userData?['email'];
 
-                return SingleChildScrollView(
+        drawer: DrawerWidget(),
+        body: SingleChildScrollView(
                   child: Column(
                     children: [
-                      Padding(
+                     Padding(
                         padding: const EdgeInsets.only(
-                            left: 20, right: 20, top: 20, bottom: 20),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height * 0.17,
-                          decoration: BoxDecoration(
-                              color: kPColor,
-                              borderRadius: BorderRadius.circular(30)),
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 30),
-                            child: Stack(
-                              children: [
-                                Row(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 45.0,
-                                      backgroundColor: Colors.white,
-                                      backgroundImage: imageUrl != null
-                                          ? NetworkImage(imageUrl)
-                                          : null,
-                                      child: imageUrl == null
-                                          ? Text(
-                                              name != null
-                                                  ? name[0].toUpperCase()
-                                                  : "",
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                              ),
-                                            )
-                                          : null,
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          "${firstName} ${SecondName}",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text(
-                                          "${email}",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                                Positioned(
-                                  right: 30,
-                                  top: 20,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      GestureDetector(
-                                        onTap:(){
-                                          Navigator.push(context, MaterialPageRoute(builder: (context)=> EditProfileScreen()));
-                                        },
-                                        child: Icon(
-                                          Icons.edit,
-                                          size: 30,
-                                          color: Colors.green.shade900,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 20, right: 20, bottom: 20),
+                            left: 20, right: 20, top :10,bottom: 20),
                         child: Container(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height * 0.45,
@@ -173,7 +72,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => AccountInfo()));
+                                          builder: (context) => EditProfileScreen()));
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.only(
@@ -192,7 +91,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                             borderRadius:
                                                 BorderRadius.circular(10)),
                                         child: Icon(
-                                          Icons.person,
+                                          Icons.edit_note_outlined,
                                           color: Colors.white,
                                         ),
                                       ),
@@ -200,7 +99,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                         width: 10,
                                       ),
                                       Text(
-                                        "My Account",
+                                        "Edit Profile",
                                         style: TextStyle(
                                             color: Colors.black,
                                             fontSize: 15,
@@ -221,7 +120,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              ChangePasswordScreen()));
+                                              ChangeEmail()));
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.only(
@@ -240,7 +139,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                             borderRadius:
                                                 BorderRadius.circular(10)),
                                         child: Icon(
-                                          Icons.password_rounded,
+                                          Icons.contact_mail,
                                           color: Colors.white,
                                         ),
                                       ),
@@ -248,7 +147,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                         width: 10,
                                       ),
                                       Text(
-                                        "Change Password",
+                                        "Change Email",
                                         style: TextStyle(
                                             color: Colors.black,
                                             fontSize: 15,
@@ -369,20 +268,8 @@ class _SettingScreenState extends State<SettingScreen> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  AwesomeDialog(
-                                      context: context,
-                                      dialogType: DialogType.noHeader,
-                                      animType: AnimType.bottomSlide,
-                                      title: 'Logout ',
-                                      desc: 'Are you sure?',
-                                      btnCancelOnPress: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      btnOkOnPress: () async {
-                                        loader(context);
-                                        await logout(context);
-                                      }).show();
-                                },
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> LanguageSettings()));
+                               },
                                 child: Padding(
                                   padding: const EdgeInsets.only(
                                       top: 15, left: 15, right: 15, bottom: 15),
@@ -400,7 +287,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                             borderRadius:
                                                 BorderRadius.circular(10)),
                                         child: Icon(
-                                          Icons.logout,
+                                          Icons.language,
                                           color: Colors.white,
                                         ),
                                       ),
@@ -408,7 +295,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                         width: 10,
                                       ),
                                       Text(
-                                        "Logout",
+                                        "Language Settings",
                                         style: TextStyle(
                                             color: Colors.black,
                                             fontSize: 15,
@@ -426,9 +313,15 @@ class _SettingScreenState extends State<SettingScreen> {
                       )
                     ],
                   ),
-                );
-              }
-            }));
+                )
+            
+            
+            
+            );
+            
+            
+            
+            
   }
 
   Future<void> logout(BuildContext context) async {

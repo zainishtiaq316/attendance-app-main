@@ -1,24 +1,21 @@
-import 'dart:io';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:studentattendance/Signup_Signin_Screen/change_password.dart';
-import 'package:studentattendance/screens/Profile/profile_menu.dart';
-import 'package:studentattendance/screens/Profile/uplader.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:studentattendance/Signup_Signin_Screen/splash.dart';
+import 'package:studentattendance/screens/Profile/developer_contact.dart';
+import 'package:studentattendance/screens/Profile/edit_profile.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:studentattendance/widgets/drawerWidget.dart';
 
-import '../../Signup_Signin_Screen/login_screen.dart';
+
 import '../../models/usermodel.dart';
-import '../../pages/homepage.dart';
-import '../../utils/assureDialog.dart';
 import '../../utils/color_utils.dart';
 import '../../utils/loadingIndicator.dart';
 import 'helpScreen.dart';
 import 'myaccount.dart';
-import 'myimagePicker.dart';
 
 final profileIcon =
     "https://warranty.aquaoasis.com/images/icons/profile-icon.png";
@@ -31,237 +28,415 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  User? user = FirebaseAuth.instance.currentUser;
-  UserModel loggedInUser = UserModel();
-  File? pickImage;
-  final _imgPicker = MyImagePicker();
-  final UploaderService uploaderService = UploaderService();
-
-  @override
-  Widget build(BuildContext context) {
+ Widget build(BuildContext context) {
+    User? user = FirebaseAuth.instance.currentUser;
+    String? name = user?.displayName;
+    String? imageUrl = user?.photoURL;
     return Scaffold(
-      appBar: AppBar(
-        actionsIconTheme: IconThemeData(color: Colors.blue),
-        title: Text(
-                "Profile",
-                style: GoogleFonts.montserrat(
-                  fontWeight: FontWeight.bold,
-                  color: kPColor,
-                ),
-              ),
-       
-      ),
-       drawer: DrawerWidget(),
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(vertical: 20),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: Stack(
-                  children: [
-                    Container(
-                        width: MediaQuery.of(context).size.width * 0.44,
-                        height: MediaQuery.of(context).size.height * 0.2,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(
-                              width: 2,
-                              color: Theme.of(context).scaffoldBackgroundColor),
-                          boxShadow: [
-                            BoxShadow(
-                                spreadRadius: 2,
-                                blurRadius: 10,
-                                color: Colors.black.withOpacity(0.1),
-                                offset: Offset(0, 10))
-                          ],
-                          shape: BoxShape.circle,
-                        ),
-                        child: pickImage == null
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(100),
-                                child: CachedNetworkImage(
-                                  errorWidget: (context, url, error) {
-                                    return Image.asset(
-                                      "assets/images/user.png",
-                                      fit: BoxFit.cover,
-                                    );
-                                  },
-                                  fit: BoxFit.cover,
-                                  imageUrl:
-                                      "${user?.photoURL != null ? user?.photoURL : profileIcon}",
-                                ),
-                              )
-                            : ClipRRect(
-                                borderRadius: BorderRadius.circular(500),
-                                child: Image.file(
-                                  pickImage!,
-                                  fit: BoxFit.cover,
-                                ),
-                              )),
-                    Positioned(
-                        bottom: 10,
-                        right: 5,
-                        child: Container(
-                            height: 40,
-                            width: 40,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                width: 4,
-                                color:
-                                    Theme.of(context).scaffoldBackgroundColor,
-                              ),
-                              color: Colors.white,
-                            ),
-                            child: Center(
-                              child: GestureDetector(
-                                  onTap: () async {
-                                    final file = await _imgPicker.pickImage();
-
-                                    if (file != null) {
-                                      setState(() {
-                                        pickImage = file;
-                                      });
-                                    }
-                                  },
-                                  child: Icon(Icons.camera_alt,
-                                      color: Colors.black)),
-                            ))),
-                  ],
-                ),
-              ),
+        appBar: AppBar(
+          actionsIconTheme: IconThemeData(color: Colors.blue),
+          title: Text(
+            "Porfile",
+            style: GoogleFonts.montserrat(
+              fontWeight: FontWeight.bold,
+              color: kPColor,
             ),
-            SizedBox(height: 10),
-            // Text("${loggedInUser.firstName} ${loggedInUser.secondName}",
-            //     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15)),
-            // Text("${loggedInUser.email}",
-            //     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15)),
-            Text("${user!.displayName}",
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15)),
-            Text(
-                // "${loggedInUser.firstName} ${loggedInUser.secondName}",
-                "${user!.email}",
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15)),
-            pickImage != null
-                ? InkWell(
-                    onTap: () async {
-                      loader(context);
-                      final image = await uploaderService.uploadFile(
-                          pickImage!, "Profile_Images", FileType.Image);
+          ),
+          
+          centerTitle: true,
+        ),
+        drawer: DrawerWidget(),
+        body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+            future: FirebaseFirestore.instance
+                .collection('users')
+                .doc(user?.uid)
+                .get(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                    child: CircularProgressIndicator(
+                  color: kPColor,
+                )); // Loading indicator while fetching data
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                Map<String, dynamic>? userData = snapshot.data?.data();
+                String? firstName = userData?['firstName'];
+                String? SecondName = userData?['secondName'];
+                String? email = userData?['email'];
 
-                      // await FirebaseDatabase.instance
-                      //     .ref("Users")
-                      //     .child(FirebaseAuth.instance.currentUser!.uid)
-                      //     .update({"photoURL": image.downloadLink});
-                      await FirebaseFirestore.instance
-                          .collection("users")
-                          .doc(FirebaseAuth.instance.currentUser!.uid)
-                          .update({"photoURL": image.downloadLink});
-
-                      await FirebaseAuth.instance.currentUser!
-                          .updatePhotoURL(image.downloadLink)
-                          .whenComplete(() {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MyHomePage()));
-
-                        Fluttertoast.showToast(msg: "Profile Updated");
-
-                        setState(() {
-                          pickImage = null;
-                        });
-                      });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          color: kPColor,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          child: Text(
-                            "Update Picture",
-                            style: GoogleFonts.openSans(
-                                color: Colors.white,
-                                // fontSize: 20,
-                                fontWeight: FontWeight.bold),
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 20, right: 20, top: 20, bottom: 20),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.17,
+                          decoration: BoxDecoration(
+                              color: kPColor,
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 30),
+                            child: Stack(
+                              children: [
+                                Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 45.0,
+                                      backgroundColor: Colors.white,
+                                      backgroundImage: imageUrl != null
+                                          ? NetworkImage(imageUrl)
+                                          : null,
+                                      child: imageUrl == null
+                                          ? Text(
+                                              name != null
+                                                  ? name[0].toUpperCase()
+                                                  : "",
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                              ),
+                                            )
+                                          : null,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "${firstName} ${SecondName}",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(
+                                          "${email}",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                Positioned(
+                                  right: 30,
+                                  top: 20,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      GestureDetector(
+                                        onTap:(){
+                                          Navigator.push(context, MaterialPageRoute(builder: (context)=> EditProfileScreen()));
+                                        },
+                                        child: Icon(
+                                          Icons.edit,
+                                          size: 30,
+                                          color: Colors.green.shade900,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  )
-                : SizedBox.shrink(),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 8,
-              ),
-              child: Divider(
-                color: black,
-                thickness: 0.5,
-              ),
-            ),
-            ProfileMenu(
-              text: "My Account",
-              icon: "assets/icons/User Icon.svg",
-              press: () => {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AccountInfo()),
-                )
-              },
-            ),
-            ProfileMenu(
-              text: "Change Password",
-              icon: "assets/icons/User Icon.svg",
-              press: () => {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ChangePasswordScreen()),
-                )
-              },
-            ),
-            // ProfileMenu(
-            //   text: "Settings",
-            //   icon: "assets/icons/Settings.svg",
-            //   press: () {},
-            // ),
-            ProfileMenu(
-              text: "Help Center",
-              icon: "assets/icons/Question mark.svg",
-              press: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HelpCenterScreen()),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 20, right: 20, bottom: 20),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.45,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(color: Colors.grey, blurRadius: 2)
+                              ],
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 10,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => AccountInfo()));
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 15, left: 15, right: 15, bottom: 15),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.10,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.05,
+                                        decoration: BoxDecoration(
+                                            color: Colors.orange,
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        child: Icon(
+                                          Icons.person,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        "My Account",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      Spacer(),
+                                      Icon(Icons.arrow_forward_ios)
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Divider(
+                                color: Colors.grey.shade300,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ChangePasswordScreen()));
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 15, left: 15, right: 15, bottom: 15),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.10,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.05,
+                                        decoration: BoxDecoration(
+                                            color: Colors.blue,
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        child: Icon(
+                                          Icons.password_rounded,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        "Change Password",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      Spacer(),
+                                      Icon(Icons.arrow_forward_ios)
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Divider(
+                                color: Colors.grey.shade300,
+                              ),
+                              GestureDetector(
+
+                                onTap:(){
+
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> HelpCenterScreen()));
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 15, left: 15, right: 15, bottom: 15),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: MediaQuery.of(context).size.width *
+                                            0.10,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.05,
+                                        decoration: BoxDecoration(
+                                            color: Colors.grey,
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        child: Icon(
+                                          Icons.help_center,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        "Help Center",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      Spacer(),
+                                      Icon(Icons.arrow_forward_ios)
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Divider(
+                                color: Colors.grey.shade300,
+                              ),
+                              GestureDetector(
+
+                                onTap :(){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> DeveloperContactPage()));
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 15, left: 15, right: 15, bottom: 15),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: MediaQuery.of(context).size.width *
+                                            0.10,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.05,
+                                        decoration: BoxDecoration(
+                                            color: Colors.yellow,
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        child: Icon(
+                                          Icons.contact_page,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        "Contact",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      Spacer(),
+                                      Icon(Icons.arrow_forward_ios)
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 20, right: 20, bottom: 20),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.09,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(color: Colors.grey, blurRadius: 2)
+                              ],
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Column(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  AwesomeDialog(
+                                      context: context,
+                                      dialogType: DialogType.noHeader,
+                                      animType: AnimType.bottomSlide,
+                                      title: 'Logout ',
+                                      desc: 'Are you sure?',
+                                      btnCancelOnPress: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      btnOkOnPress: () async {
+                                        loader(context);
+                                        await logout(context);
+                                      }).show();
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 15, left: 15, right: 15, bottom: 15),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.10,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.05,
+                                        decoration: BoxDecoration(
+                                            color: Colors.red,
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        child: Icon(
+                                          Icons.logout,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        "Logout",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      Spacer(),
+                                      Icon(Icons.arrow_forward_ios)
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 );
-              },
-            ),
-            ProfileMenu(
-              text: "Log Out",
-              icon: "assets/icons/Log out.svg",
-              press: () {
-                assuranceDialog(context, () async {
-                  loader(context);
-                  await logout(context);
-                });
-              },
-            ),
-          ],
-        ),
-      ),
-    );
+              }
+            }));
   }
 
   Future<void> logout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
     Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => LoginScreen()));
+        MaterialPageRoute(builder: (context) => SplashScreen()));
   }
 }
