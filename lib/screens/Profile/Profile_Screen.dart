@@ -472,4 +472,7 @@ class _ProfileState extends State<Profile> {
     Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => SplashScreen()));
   }
+
+
+
 }

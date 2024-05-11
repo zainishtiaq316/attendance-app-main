@@ -2,6 +2,7 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:studentattendance/Admin/AdminBN.dart';
+import 'package:studentattendance/Admin/AdminHome.dart';
 import 'package:studentattendance/Signup_Signin_Screen/Forgot_Screen.dart';
 import 'package:studentattendance/Signup_Signin_Screen/signup_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -101,7 +102,7 @@ bool _obscurePassword = true;
                 }),
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
                     builder: (context) =>
-                        role == "Admin" ? AdminBottomNav() : MyHomePage()))
+                        role == "Admin" ? AdminHome() : MyHomePage()))
                 // }
                 // else
                 //   {

@@ -1,69 +1,114 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:studentattendance/Admin/Edit/Edit.dart';
 
 import 'package:studentattendance/Admin/leave/LeaveRequests.dart';
 import 'package:studentattendance/Admin/viewrecord/Viewrecord.dart';
 import 'package:flutter/material.dart';
+import 'package:studentattendance/Admin/widget/admin-drawer.dart';
+import 'package:studentattendance/Signup_Signin_Screen/splash.dart';
 
 import '../utils/color_utils.dart';
 
-class AdminHome extends StatelessWidget {
+class AdminHome extends StatefulWidget {
+  @override
+  State<AdminHome> createState() => _AdminHomeState();
+}
+
+class _AdminHomeState extends State<AdminHome> {
+  
+  late FocusNode myFocusNode;
+
+  DateTime? currentBackPressTime;
+  Future<bool> onWillPop() async {
+    // myFocusNode.unfocus();
+    DateTime now = DateTime.now();
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime!) > Duration(seconds: 2)) {
+      currentBackPressTime = now;
+      Fluttertoast.showToast(msg: 'Press back again to exit');
+      setState(() {
+        myFocusNode.unfocus();
+      });
+      return Future.value(false);
+    }
+     await FirebaseAuth.instance.signOut();
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => SplashScreen()));
+
+    return Future.value(true);
+  }
+   @override
+  void dispose() {
+    super.dispose();
+    myFocusNode.dispose();
+  }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: kPColor,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        title: const Text(
-          "Attendance App",
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(height: 20),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Image.asset(
-                'assets/images/admin.png', // Replace with your image path
-                height: 100,
-
-                fit: BoxFit.cover,
+    
+    // ignore: deprecated_member_use
+    return WillPopScope(
+      onWillPop: onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+              actionsIconTheme: IconThemeData(color: Colors.blue),
+              title: Text(
+                "Home",
+                style: GoogleFonts.montserrat(
+                  fontWeight: FontWeight.bold,
+                  color: kPColor,
+                ),
               ),
+              
+              centerTitle: true,
             ),
-            SizedBox(height: 20),
-            AdminButton(
-              icon: Icons.list_alt,
-              label: 'View All Records',
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ViewRecord()));
-              },
-            ),
-            SizedBox(height: 20),
-            AdminButton(
-              icon: Icons.edit,
-              label: 'Edit Attendance',
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => EditAttendance()));
-              },
-            ),
-            SizedBox(height: 20),
-            AdminButton(
-              icon: Icons.approval,
-              label: 'Leave Approval',
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => LeaveRequests()));
-              },
-            ),
-            SizedBox(height: 20),
-          ],
+           backgroundColor: Colors.white,
+           drawer: AdminDrawerWidget(),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height: 20),
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Image.asset(
+                  'assets/images/admin.png', // Replace with your image path
+                  height: 100,
+      
+                  fit: BoxFit.cover,
+                ),
+              ),
+              SizedBox(height: 20),
+              AdminButton(
+                icon: Icons.list_alt,
+                label: 'View All Records',
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ViewRecord()));
+                },
+              ),
+              SizedBox(height: 20),
+              AdminButton(
+                icon: Icons.edit,
+                label: 'Edit Attendance',
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => EditAttendance()));
+                },
+              ),
+              SizedBox(height: 20),
+              AdminButton(
+                icon: Icons.approval,
+                label: 'Leave Approval',
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LeaveRequests()));
+                },
+              ),
+              SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );

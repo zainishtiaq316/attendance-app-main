@@ -1,33 +1,22 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:studentattendance/Admin/eidt_profile_screen.dart';
 import 'package:studentattendance/Signup_Signin_Screen/splash.dart';
 import 'package:studentattendance/screens/Profile/change_email.dart';
-import 'package:studentattendance/screens/Profile/edit_profile.dart';
-import 'package:studentattendance/screens/Profile/helpScreen.dart';
 import 'package:studentattendance/screens/Profile/language_settings.dart';
-import 'package:studentattendance/screens/Profile/myaccount.dart';
 import 'package:studentattendance/utils/color_utils.dart';
+import 'package:studentattendance/widgets/drawerWidget.dart';
 
-import '../../Signup_Signin_Screen/change_password.dart';
-import '../../models/usermodel.dart';
-import '../../utils/loadingIndicator.dart';
-import '../../widgets/drawerWidget.dart';
-import 'developer_contact.dart';
-
-class SettingScreen extends StatefulWidget {
-  const SettingScreen({super.key});
+class AdminSettings extends StatefulWidget {
+  const AdminSettings({super.key});
 
   @override
-  State<SettingScreen> createState() => _SettingScreenState();
+  State<AdminSettings> createState() => _AdminSettingsState();
 }
 
-class _SettingScreenState extends State<SettingScreen> {
+class _AdminSettingsState extends State<AdminSettings> {
   late FocusNode myFocusNode;
 
   DateTime? currentBackPressTime;
@@ -100,7 +89,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => EditProfileScreen()));
+                                            builder: (context) => EditProfileAdmin()));
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.only(

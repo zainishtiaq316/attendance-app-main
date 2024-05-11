@@ -6,26 +6,25 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:studentattendance/models/usermodel.dart';
-import 'package:studentattendance/pages/homepage.dart';
+import 'package:studentattendance/Admin/AdminHome.dart';
+import 'package:studentattendance/Admin/AdminProfile.dart';
 import 'package:studentattendance/screens/Profile/myimagePicker.dart';
 import 'package:studentattendance/screens/Profile/uplader.dart';
 import 'package:studentattendance/utils/color_utils.dart';
 import 'package:studentattendance/utils/loadingIndicator.dart';
 
-import '../../Admin/AdminProfile.dart';
+import '../models/usermodel.dart';
 
-class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({super.key});
+class EditProfileAdmin extends StatefulWidget {
+  const EditProfileAdmin({super.key});
 
   @override
-  State<EditProfileScreen> createState() => _EditProfileScreenState();
+  State<EditProfileAdmin> createState() => _EditProfileAdminState();
 }
 
-class _EditProfileScreenState extends State<EditProfileScreen> {
-  User? user = FirebaseAuth.instance.currentUser;
+class _EditProfileAdminState extends State<EditProfileAdmin> {
+ User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
    final _formKey = GlobalKey<FormState>();
     //editing controller
@@ -33,7 +32,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final lastNameEditingController = new TextEditingController();
     final emailEditingController = new TextEditingController();
     final phoneNumberEditingController = new TextEditingController();
-    final rollNoNumberEditingController = new TextEditingController();
   File? pickImage;
   final _imgPicker = MyImagePicker();
   final UploaderService uploaderService = UploaderService();
@@ -179,47 +177,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           fillColor: Color(0xfff3f3f4),
           filled: true),
     );
-    //first name field
-    final rollNoField = TextFormField(
-      autofocus: false,
-      obscureText: false,
-      enableSuggestions: true,
-      autocorrect: true,
-      controller: rollNoNumberEditingController,
-      cursorColor: Colors.black45,
-      style: TextStyle(color: Colors.black45.withOpacity(0.9)),
-      keyboardType: TextInputType.name,
-      validator: (value) {
-        RegExp regex = new RegExp(r'^.{3,}$');
-        if (value!.isEmpty) {
-          return ("Roll No can't be Empty");
-        }
-        if (!regex.hasMatch(value)) {
-          return ("Enter Valid Roll No");
-        }
-        return null;
-      },
-      onSaved: (value) {
-        //new
-        rollNoNumberEditingController.text = value!;
-      },
-      textInputAction: TextInputAction.next,
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Roll No",
-          floatingLabelBehavior: FloatingLabelBehavior.never,
-          hintStyle: TextStyle(color: Colors.grey.withOpacity(0.9)),
-          border: InputBorder.none,
-          fillColor: Color(0xfff3f3f4),
-          filled: true),
-    );
-    //signup button
+   //signup button
     final update = GestureDetector(
       onTap: () async {
         if (_formKey.currentState!.validate()) {
           loader(context);
           if (pickImage != null) {
-            loader(context);
+            // loader(context);
             final image = await uploaderService.uploadFile(
                 pickImage!, "Profile_Images", FileType.Image);
 
@@ -236,14 +200,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               "firstName": firstNameEditingController,
               "secondName": lastNameEditingController,
               "phoneNumber": phoneNumberEditingController,
-              "rollNo": rollNoNumberEditingController
+            
             });
 
             await FirebaseAuth.instance.currentUser!
                 .updatePhotoURL(image.downloadLink)
                 .whenComplete(() {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MyHomePage()));
+                  MaterialPageRoute(builder: (context) => AdminProfile()));
 
               Fluttertoast.showToast(msg: "Profile Updated");
 
@@ -321,7 +285,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               lastNameEditingController.text = SecondName.toString();
               emailEditingController.text = email.toString();
               phoneNumberEditingController.text = phoneNumber.toString();
-              rollNoNumberEditingController.text = rollNo.toString();
               return SingleChildScrollView(
                 padding: EdgeInsets.symmetric(vertical: 20),
                 child: Column(
@@ -449,15 +412,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             ),
                             phoneNumberField,
                             SizedBox(height: 10),
-                            Text(
-                              "Roll No",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 15),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            rollNoField,
+                           
                             SizedBox(height: 20),
                             update,
                             SizedBox(height: 15),
@@ -514,6 +469,5 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       },
     );
   }
-
 
 }
