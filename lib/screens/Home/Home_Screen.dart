@@ -1,4 +1,7 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:studentattendance/Signup_Signin_Screen/splash.dart';
 import 'package:studentattendance/screens/Home/markattendance.dart';
 import 'package:studentattendance/screens/Home/viewattendance.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,143 +15,180 @@ import '../../widgets/drawerWidget.dart';
 import 'leaveattendance.dart';
 import 'markattendancee.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   HomeScreen({Key? key}) : super(key: key);
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   User? user = FirebaseAuth.instance.currentUser;
+
   UserModel loggedInUser = UserModel();
+  late FocusNode myFocusNode;
+
+  DateTime? currentBackPressTime;
+  Future<bool> onWillPop() async {
+    // myFocusNode.unfocus();
+    DateTime now = DateTime.now();
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime!) > Duration(seconds: 2)) {
+      currentBackPressTime = now;
+      Fluttertoast.showToast(msg: 'Press back again to exit');
+      setState(() {
+        myFocusNode.unfocus();
+      });
+      return Future.value(false);
+    }
+     await FirebaseAuth.instance.signOut();
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => SplashScreen()));
+
+    return Future.value(true);
+  }
+   @override
+  void dispose() {
+    super.dispose();
+    myFocusNode.dispose();
+  }
+   
 
   @override
   Widget build(BuildContext context) {
     String? name = user?.displayName;
     String? imageUrl = user?.photoURL;
-    return Scaffold(
-      appBar: AppBar(
-        actionsIconTheme: IconThemeData(color: Colors.blue),
-        title: Text(
-          "Attend easy",
-          style: GoogleFonts.montserrat(
-            fontWeight: FontWeight.bold,
-            color: kPColor,
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: GestureDetector(
-              onTap: (){
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Profile()));
-              },
-              child: CircleAvatar(
-                radius: 25.0,
-                backgroundColor: Colors.white,
-                backgroundImage: imageUrl != null ? NetworkImage(imageUrl) : null,
-                child: imageUrl == null
-                    ? Text(
-                        name != null ? name[0].toUpperCase() : "",
-                        style: TextStyle(
-                          color: Colors.black,
-                        ),
-                      )
-                    : null,
-              ),
+     // ignore: deprecated_member_use
+    return WillPopScope(
+        onWillPop: onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+          actionsIconTheme: IconThemeData(color: Colors.blue),
+          title: Text(
+            "Attend easy",
+            style: GoogleFonts.montserrat(
+              fontWeight: FontWeight.bold,
+              color: kPColor,
             ),
           ),
-        ],
-      ),
-      drawer: DrawerWidget(),
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-              children: [
-                Text(
-                  "Hi, ",
-                  style: GoogleFonts.montserrat(
-                    color: Colors.black.withOpacity(0.7),
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: GestureDetector(
+                onTap: (){
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Profile()));
+                },
+                child: CircleAvatar(
+                  radius: 25.0,
+                  backgroundColor: Colors.white,
+                  backgroundImage: imageUrl != null ? NetworkImage(imageUrl) : null,
+                  child: imageUrl == null
+                      ? Text(
+                          name != null ? name[0].toUpperCase() : "",
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
+                        )
+                      : null,
                 ),
-                Text(
-                  "${user!.displayName}",
-                  style: GoogleFonts.montserrat(
-                    color: Colors.black.withOpacity(0.7),
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10.0),
-            Text(
-              "Welcome to Attendance App",
-              style: GoogleFonts.montserrat(
-                color: Colors.black.withOpacity(0.7),
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
               ),
-            ),
-            const SizedBox(height: 20.0),
-            Container(
-              width: double.infinity,
-              child: Image.asset(
-                "assets/images/attendance.png",
-                height: 200,
-              ),
-            ),
-            const SizedBox(height: 20.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButtonContainer(
-                  text: "Mark Attendance",
-                  icon: Icons.check_circle,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => markatt(),
-                      ),
-                    );
-                  },
-                ),
-                ElevatedButtonContainer(
-                  text: "Mark Leave",
-                  icon: Icons.event_note_outlined,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => leaveAttendance(),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButtonContainer(
-                  text: "View Attendance",
-                  icon: Icons.visibility,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => viewAttendance(),
-                      ),
-                    );
-                  },
-                ),
-              ],
             ),
           ],
+        ),
+        drawer: DrawerWidget(),
+        backgroundColor: Colors.white,
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    "Hi, ",
+                    style: GoogleFonts.montserrat(
+                      color: Colors.black.withOpacity(0.7),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    "${user!.displayName}",
+                    style: GoogleFonts.montserrat(
+                      color: Colors.black.withOpacity(0.7),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10.0),
+              Text(
+                "Welcome to Attendance App",
+                style: GoogleFonts.montserrat(
+                  color: Colors.black.withOpacity(0.7),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 20.0),
+              Container(
+                width: double.infinity,
+                child: Image.asset(
+                  "assets/images/attendance.png",
+                  height: 200,
+                ),
+              ),
+              const SizedBox(height: 20.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButtonContainer(
+                    text: "Mark Attendance",
+                    icon: Icons.check_circle,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => markatt(),
+                        ),
+                      );
+                    },
+                  ),
+                  ElevatedButtonContainer(
+                    text: "Mark Leave",
+                    icon: Icons.event_note_outlined,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => leaveAttendance(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButtonContainer(
+                    text: "View Attendance",
+                    icon: Icons.visibility,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => viewAttendance(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

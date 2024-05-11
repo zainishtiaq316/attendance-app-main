@@ -100,12 +100,16 @@ class _ChangeEmailScreenState extends State<ChangeEmail> {
       onTap: () async {
         if (_formKey.currentState!.validate()) {
           loader(context);
+          // ignore: deprecated_member_use
+          
           await FirebaseFirestore.instance
               .collection("users")
               .doc(FirebaseAuth.instance.currentUser!.uid)
               .update({
             "email": emailController.text.trim(),
           });
+          // ignore: deprecated_member_use
+          await _auth.currentUser?.updateEmail(emailController.text.trim());
 
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => SettingScreen()));
@@ -145,7 +149,7 @@ class _ChangeEmailScreenState extends State<ChangeEmail> {
         elevation: 0,
         centerTitle: true,
         title: const Text(
-          "Change Password",
+          "Change Email",
           style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
@@ -171,7 +175,7 @@ class _ChangeEmailScreenState extends State<ChangeEmail> {
                     height: 30,
                   ),
                   Text(
-                    "Password",
+                    "Email",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
                   SizedBox(
