@@ -531,7 +531,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     Fluttertoast.showToast(msg: "Verification mail sent to your account");
     Navigator.pushAndRemoveUntil(
         (context),
-        MaterialPageRoute(builder: (context) => EmailVerificationScreen()),
+        MaterialPageRoute(builder: (context) => LoginScreen()),
         (route) => false);
   }
 }

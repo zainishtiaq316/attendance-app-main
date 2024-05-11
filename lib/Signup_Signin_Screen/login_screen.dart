@@ -1,6 +1,7 @@
 // ignore_for_file: body_might_complete_normally_catch_error
 
 import 'package:flutter/widgets.dart';
+import 'package:studentattendance/Admin/AdminBN.dart';
 import 'package:studentattendance/Signup_Signin_Screen/Forgot_Screen.dart';
 import 'package:studentattendance/Signup_Signin_Screen/signup_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -100,7 +101,7 @@ bool _obscurePassword = true;
                 }),
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
                     builder: (context) =>
-                        role == "Admin" ? Admin(email: email) : MyHomePage()))
+                        role == "Admin" ? AdminBottomNav() : MyHomePage()))
                 // }
                 // else
                 //   {
