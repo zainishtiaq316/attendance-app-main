@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -89,16 +90,22 @@ class _leaveAttendanceState extends State<leaveAttendance> {
     String userId = FirebaseAuth.instance.currentUser!.uid;
     // Query the subcollection where you store the attendance data
     List<QuerySnapshot> snapshots = await Future.wait([
-      FirebaseFirestore.instance
+     FirebaseFirestore.instance
           .collection('MarkAttendance')
           .doc(userId) // Use the user ID as the document ID
-          .collection('attendance')
+          .collection('CheckOut')
+          .where('CurrentDate', isEqualTo: currentDate)
+          .get(),
+       FirebaseFirestore.instance
+          .collection('MarkAttendance')
+          .doc(userId) // Use the user ID as the document ID
+          .collection('CheckIn')
           .where('CurrentDate', isEqualTo: currentDate)
           .get(),
       FirebaseFirestore.instance
-          .collection('Confirmedleaves')
+          .collection('MarkAttendance')
           .doc(userId) // Use the user ID as the document ID
-          .collection('attendance')
+          .collection('leaves')
           .where('currentDate', isEqualTo: currentDate)
           .get(),
     ]);
@@ -137,7 +144,7 @@ class _leaveAttendanceState extends State<leaveAttendance> {
           style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () {
             //passing this to a route
             Navigator.of(context).pop();
@@ -195,24 +202,28 @@ class _leaveAttendanceState extends State<leaveAttendance> {
                             hintText: "Name",
                             filled: true,
                             floatingLabelBehavior: FloatingLabelBehavior.never,
-                            fillColor: Colors.white.withOpacity(0.3),
-                            hintStyle: TextStyle(
-                                color: Colors.black45.withOpacity(0.9)),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                width: 2,
-                                style: BorderStyle.solid,
-                                color: Colors.blueGrey,
-                              ),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                width: 0,
-                                style: BorderStyle.solid,
-                              ),
-                            ),
+                            // fillColor: Colors.white.withOpacity(0.3),
+                            // hintStyle: TextStyle(
+                            //     color: Colors.black45.withOpacity(0.9)),
+                            // focusedBorder: OutlineInputBorder(
+                            //   borderRadius: BorderRadius.circular(10),
+                            //   borderSide: const BorderSide(
+                            //     width: 2,
+                            //     style: BorderStyle.solid,
+                            //     color: Colors.blueGrey,
+                            //   ),
+                            // ),
+                            // border: OutlineInputBorder(
+                            //   borderRadius: BorderRadius.circular(10),
+                            //   borderSide: const BorderSide(
+                            //     width: 0,
+                            //     style: BorderStyle.solid,
+                            //   ),
+                            // ),
+                             fillColor: Colors.orange.withOpacity(0.1),
+                          hintStyle:
+                              TextStyle(color: Colors.black45.withOpacity(0.9)),
+                              border: InputBorder.none
                           ),
                         ),
                         SizedBox(height: 16.0),
@@ -236,24 +247,28 @@ class _leaveAttendanceState extends State<leaveAttendance> {
                             hintText: "Admin Assign You Roll Number",
                             filled: true,
                             floatingLabelBehavior: FloatingLabelBehavior.never,
-                            fillColor: Colors.white.withOpacity(0.3),
-                            hintStyle: TextStyle(
-                                color: Colors.black45.withOpacity(0.9)),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                width: 2,
-                                style: BorderStyle.solid,
-                                color: Colors.blueGrey,
-                              ),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                width: 0,
-                                style: BorderStyle.solid,
-                              ),
-                            ),
+                            // fillColor: Colors.white.withOpacity(0.3),
+                            // hintStyle: TextStyle(
+                            //     color: Colors.black45.withOpacity(0.9)),
+                            // focusedBorder: OutlineInputBorder(
+                            //   borderRadius: BorderRadius.circular(10),
+                            //   borderSide: const BorderSide(
+                            //     width: 2,
+                            //     style: BorderStyle.solid,
+                            //     color: Colors.blueGrey,
+                            //   ),
+                            // ),
+                            // border: OutlineInputBorder(
+                            //   borderRadius: BorderRadius.circular(10),
+                            //   borderSide: const BorderSide(
+                            //     width: 0,
+                            //     style: BorderStyle.solid,
+                            //   ),
+                            // ),
+                             fillColor: Colors.orange.withOpacity(0.1),
+                          hintStyle:
+                              TextStyle(color: Colors.black45.withOpacity(0.9)),
+                              border: InputBorder.none
                           ),
                           onSaved: (value) {
                             //new
@@ -303,24 +318,28 @@ class _leaveAttendanceState extends State<leaveAttendance> {
                             hintText: "Attendance Status",
                             filled: true,
                             floatingLabelBehavior: FloatingLabelBehavior.never,
-                            fillColor: Colors.white.withOpacity(0.3),
-                            hintStyle: TextStyle(
-                                color: Colors.black45.withOpacity(0.9)),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                width: 2,
-                                style: BorderStyle.solid,
-                                color: Colors.blueGrey,
-                              ),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                width: 0,
-                                style: BorderStyle.solid,
-                              ),
-                            ),
+                            // fillColor: Colors.white.withOpacity(0.3),
+                            // hintStyle: TextStyle(
+                            //     color: Colors.black45.withOpacity(0.9)),
+                            // focusedBorder: OutlineInputBorder(
+                            //   borderRadius: BorderRadius.circular(10),
+                            //   borderSide: const BorderSide(
+                            //     width: 2,
+                            //     style: BorderStyle.solid,
+                            //     color: Colors.blueGrey,
+                            //   ),
+                            // ),
+                            // border: OutlineInputBorder(
+                            //   borderRadius: BorderRadius.circular(10),
+                            //   borderSide: const BorderSide(
+                            //     width: 0,
+                            //     style: BorderStyle.solid,
+                            //   ),
+                            // ),
+                             fillColor: Colors.orange.withOpacity(0.1),
+                          hintStyle:
+                              TextStyle(color: Colors.black45.withOpacity(0.9)),
+                              border: InputBorder.none
                           ),
                         ),
                         SizedBox(height: 16.0),
@@ -344,24 +363,28 @@ class _leaveAttendanceState extends State<leaveAttendance> {
                             hintText: "Phone Number",
                             filled: true,
                             floatingLabelBehavior: FloatingLabelBehavior.never,
-                            fillColor: Colors.white.withOpacity(0.3),
-                            hintStyle: TextStyle(
-                                color: Colors.black45.withOpacity(0.9)),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                width: 2,
-                                style: BorderStyle.solid,
-                                color: Colors.blueGrey,
-                              ),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                width: 0,
-                                style: BorderStyle.solid,
-                              ),
-                            ),
+                            // fillColor: Colors.white.withOpacity(0.3),
+                            // hintStyle: TextStyle(
+                            //     color: Colors.black45.withOpacity(0.9)),
+                            // focusedBorder: OutlineInputBorder(
+                            //   borderRadius: BorderRadius.circular(10),
+                            //   borderSide: const BorderSide(
+                            //     width: 2,
+                            //     style: BorderStyle.solid,
+                            //     color: Colors.blueGrey,
+                            //   ),
+                            // ),
+                            // border: OutlineInputBorder(
+                            //   borderRadius: BorderRadius.circular(10),
+                            //   borderSide: const BorderSide(
+                            //     width: 0,
+                            //     style: BorderStyle.solid,
+                            //   ),
+                            // ),
+                             fillColor: Colors.orange.withOpacity(0.1),
+                          hintStyle:
+                              TextStyle(color: Colors.black45.withOpacity(0.9)),
+                              border: InputBorder.none
                           ),
                           onSaved: (value) {
                             //new
@@ -413,24 +436,28 @@ class _leaveAttendanceState extends State<leaveAttendance> {
                             hintText: "Email",
                             filled: true,
                             floatingLabelBehavior: FloatingLabelBehavior.never,
-                            fillColor: Colors.white.withOpacity(0.3),
-                            hintStyle: TextStyle(
-                                color: Colors.black45.withOpacity(0.9)),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                width: 2,
-                                style: BorderStyle.solid,
-                                color: Colors.blueGrey,
-                              ),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                width: 0,
-                                style: BorderStyle.solid,
-                              ),
-                            ),
+                            // fillColor: Colors.white.withOpacity(0.3),
+                            // hintStyle: TextStyle(
+                            //     color: Colors.black45.withOpacity(0.9)),
+                            // focusedBorder: OutlineInputBorder(
+                            //   borderRadius: BorderRadius.circular(10),
+                            //   borderSide: const BorderSide(
+                            //     width: 2,
+                            //     style: BorderStyle.solid,
+                            //     color: Colors.blueGrey,
+                            //   ),
+                            // ),
+                            // border: OutlineInputBorder(
+                            //   borderRadius: BorderRadius.circular(10),
+                            //   borderSide: const BorderSide(
+                            //     width: 0,
+                            //     style: BorderStyle.solid,
+                            //   ),
+                            // ),
+                             fillColor: Colors.orange.withOpacity(0.1),
+                          hintStyle:
+                              TextStyle(color: Colors.black45.withOpacity(0.9)),
+                              border: InputBorder.none
                           ),
                         ),
                         SizedBox(height: 16.0),
@@ -461,24 +488,28 @@ class _leaveAttendanceState extends State<leaveAttendance> {
                             hintText: "Current Date",
                             filled: true,
                             floatingLabelBehavior: FloatingLabelBehavior.never,
-                            fillColor: Colors.white.withOpacity(0.3),
-                            hintStyle: TextStyle(
-                                color: Colors.black45.withOpacity(0.9)),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                width: 2,
-                                style: BorderStyle.solid,
-                                color: Colors.blueGrey,
-                              ),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                width: 0,
-                                style: BorderStyle.solid,
-                              ),
-                            ),
+                            // fillColor: Colors.white.withOpacity(0.3),
+                            // hintStyle: TextStyle(
+                            //     color: Colors.black45.withOpacity(0.9)),
+                            // focusedBorder: OutlineInputBorder(
+                            //   borderRadius: BorderRadius.circular(10),
+                            //   borderSide: const BorderSide(
+                            //     width: 2,
+                            //     style: BorderStyle.solid,
+                            //     color: Colors.blueGrey,
+                            //   ),
+                            // ),
+                            // border: OutlineInputBorder(
+                            //   borderRadius: BorderRadius.circular(10),
+                            //   borderSide: const BorderSide(
+                            //     width: 0,
+                            //     style: BorderStyle.solid,
+                            //   ),
+                            // ),
+                             fillColor: Colors.orange.withOpacity(0.1),
+                          hintStyle:
+                              TextStyle(color: Colors.black45.withOpacity(0.9)),
+                              border: InputBorder.none
                           ),
                         ),
                         SizedBox(
@@ -517,32 +548,36 @@ class _leaveAttendanceState extends State<leaveAttendance> {
                             hintText: "Description",
                             filled: true,
                             floatingLabelBehavior: FloatingLabelBehavior.never,
-                            fillColor: Colors.white.withOpacity(0.3),
-                            hintStyle: TextStyle(
-                                color: Colors.black45.withOpacity(0.9)),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                width: 2,
-                                style: BorderStyle.solid,
-                                color: Colors.blueGrey,
-                              ),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                width: 0,
-                                style: BorderStyle.solid,
-                              ),
-                            ),
+                            // fillColor: Colors.white.withOpacity(0.3),
+                            // hintStyle: TextStyle(
+                            //     color: Colors.black45.withOpacity(0.9)),
+                            // focusedBorder: OutlineInputBorder(
+                            //   borderRadius: BorderRadius.circular(10),
+                            //   borderSide: const BorderSide(
+                            //     width: 2,
+                            //     style: BorderStyle.solid,
+                            //     color: Colors.blueGrey,
+                            //   ),
+                            // ),
+                            // border: OutlineInputBorder(
+                            //   borderRadius: BorderRadius.circular(10),
+                            //   borderSide: const BorderSide(
+                            //     width: 0,
+                            //     style: BorderStyle.solid,
+                            //   ),
+                            // ),
+                             fillColor: Colors.orange.withOpacity(0.1),
+                          hintStyle:
+                              TextStyle(color: Colors.black45.withOpacity(0.9)),
+                              border: InputBorder.none
                           ),
                         ),
 
                         SizedBox(
                           height: 16,
                         ),
-                        ElevatedButton(
-                          onPressed: () async {
+                        GestureDetector(
+                          onTap: () async {
                             final name = nameController.text;
                             final rollNo = rollNoController.text;
                             final email = emailController.text;
@@ -616,31 +651,31 @@ class _leaveAttendanceState extends State<leaveAttendance> {
                               });
                             }
                           },
-                          child: Text(
-                            'Submit',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.resolveWith((states) {
-                              if (states.contains(MaterialState.pressed)) {
-                                return Colors.black;
-                              }
-                              return Colors.blueGrey;
-                            }),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                            ),
-                          ),
-                        ),
+                          child: Container(
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.symmetric(vertical: 15),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                  color: Colors.grey.shade200,
+                  offset: Offset(2, 4),
+                  blurRadius: 5,
+                  spreadRadius: 2)
+            ],
+            gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [Color(0xfffbb448), Color(0xfff7892b)])),
+        child: Text(
+          "Submit",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+      ),
+   ),
                       ],
                     ),
                   ),
@@ -650,7 +685,7 @@ class _leaveAttendanceState extends State<leaveAttendance> {
             else {
               // The future is not completed yet, so return a loading indicator widget
               return Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(color: kPColor,),
               );
             }
           }),

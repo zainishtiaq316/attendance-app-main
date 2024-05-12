@@ -112,6 +112,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       obscureText: false,
       enableSuggestions: true,
       autocorrect: true,
+      enabled: false,
       controller: emailEditingController,
       cursorColor: Colors.black45,
       style: TextStyle(color: Colors.black45.withOpacity(0.9)),
@@ -185,6 +186,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       obscureText: false,
       enableSuggestions: true,
       autocorrect: true,
+      enabled: false,
       controller: rollNoNumberEditingController,
       cursorColor: Colors.black45,
       style: TextStyle(color: Colors.black45.withOpacity(0.9)),
@@ -232,11 +234,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 .doc(FirebaseAuth.instance.currentUser!.uid)
                 .update({
               "photoURL": image.downloadLink,
-              "email": emailEditingController,
-              "firstName": firstNameEditingController,
-              "secondName": lastNameEditingController,
-              "phoneNumber": phoneNumberEditingController,
-              "rollNo": rollNoNumberEditingController
+            
+              "firstName": firstNameEditingController.text.trim(),
+              "secondName": lastNameEditingController.text.trim(),
+              "phoneNumber": phoneNumberEditingController.text.trim(),
+          
+            }).catchError((e){
+               Fluttertoast.showToast(msg: e!.message);
             });
 
             await FirebaseAuth.instance.currentUser!
@@ -315,96 +319,95 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               String? email = userData?['email'];
               String? phoneNumber = userData?['phoneNumber'];
               String? rollNo = userData?['rollNo'];
-              String? photoURL = userData?['photoURL'];
       
-              firstNameEditingController.text = firstName.toString();
-              lastNameEditingController.text = SecondName.toString();
+              // firstNameEditingController.text = firstName.toString();
+              // lastNameEditingController.text = SecondName.toString();
               emailEditingController.text = email.toString();
-              phoneNumberEditingController.text = phoneNumber.toString();
+              // phoneNumberEditingController.text = phoneNumber.toString();
               rollNoNumberEditingController.text = rollNo.toString();
               return SingleChildScrollView(
                 padding: EdgeInsets.symmetric(vertical: 20),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Center(
-                        child: Stack(
-                          children: [
-                            Container(
-                                width: MediaQuery.of(context).size.width * 0.44,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.2,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(
-                                      width: 2,
-                                      color: Theme.of(context)
-                                          .scaffoldBackgroundColor),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        spreadRadius: 2,
-                                        blurRadius: 10,
-                                        color: Colors.black.withOpacity(0.1),
-                                        offset: Offset(0, 10))
-                                  ],
-                                  shape: BoxShape.circle,
-                                ),
-                                child: pickImage == null
-                                    ? ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(100),
-                                        child: CachedNetworkImage(
-                                          errorWidget: (context, url, error) {
-                                            return Image.asset(
-                                              "assets/images/user.png",
-                                              fit: BoxFit.cover,
-                                            );
-                                          },
-                                          fit: BoxFit.cover,
-                                          imageUrl:
-                                              "${user?.photoURL != null ? user?.photoURL : profileIcon}",
-                                        ),
-                                      )
-                                    : ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(500),
-                                        child: Image.file(
-                                          pickImage!,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      )),
-                            Positioned(
-                                bottom: 10,
-                                right: 5,
-                                child: Container(
-                                    height: 40,
-                                    width: 40,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        width: 4,
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Stack(
+                            children: [
+                              Container(
+                                  width: MediaQuery.of(context).size.width * 0.44,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.2,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
+                                        width: 2,
                                         color: Theme.of(context)
-                                            .scaffoldBackgroundColor,
+                                            .scaffoldBackgroundColor),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          spreadRadius: 2,
+                                          blurRadius: 10,
+                                          color: Colors.black.withOpacity(0.1),
+                                          offset: Offset(0, 10))
+                                    ],
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: pickImage == null
+                                      ? ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                          child: CachedNetworkImage(
+                                            errorWidget: (context, url, error) {
+                                              return Image.asset(
+                                                "assets/images/user.png",
+                                                fit: BoxFit.cover,
+                                              );
+                                            },
+                                            fit: BoxFit.cover,
+                                            imageUrl:
+                                                "${user?.photoURL != null ? user?.photoURL : profileIcon}",
+                                          ),
+                                        )
+                                      : ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(500),
+                                          child: Image.file(
+                                            pickImage!,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        )),
+                              Positioned(
+                                  bottom: 10,
+                                  right: 5,
+                                  child: Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          width: 4,
+                                          color: Theme.of(context)
+                                              .scaffoldBackgroundColor,
+                                        ),
+                                        color: Colors.white,
                                       ),
-                                      color: Colors.white,
-                                    ),
-                                    child: Center(
-                                      child: GestureDetector(
-                                          onTap: () async {
-                                            _showImageSourceModal();
-                                          },
-                                          child: Icon(Icons.camera_alt,
-                                              color: Colors.black)),
-                                    ))),
-                          ],
+                                      child: Center(
+                                        child: GestureDetector(
+                                            onTap: () async {
+                                              _showImageSourceModal();
+                                            },
+                                            child: Icon(Icons.camera_alt,
+                                                color: Colors.black)),
+                                      ))),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Form(
-                        key: _formKey,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -464,8 +467,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ],
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             }

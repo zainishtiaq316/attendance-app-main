@@ -23,6 +23,7 @@ class _leavedetailsState extends State<leavedetails> {
     DocumentReference documentRef = FirebaseFirestore.instance
         .collection("JoinRequests")
         .doc(widget.joinModel.id);
+    
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kPColor,

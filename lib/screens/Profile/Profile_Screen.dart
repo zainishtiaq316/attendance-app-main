@@ -411,7 +411,7 @@ class _ProfileState extends State<Profile> {
                                         title: 'Logout ',
                                         desc: 'Are you sure?',
                                         btnCancelOnPress: () {
-                                          Navigator.of(context).pop();
+                                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Profile()));
                                         },
                                         btnOkOnPress: () async {
                                           loader(context);

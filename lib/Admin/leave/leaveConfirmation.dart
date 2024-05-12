@@ -69,6 +69,23 @@ class _leaveConfiramtionState extends State<leaveConfiramtion> {
       'userId': userId,
       'userToken': userToken,
     });
+     await FirebaseFirestore.instance
+        .collection("MarkAttendance")
+        .doc(userId)
+        .collection("leaves")
+        .doc(id)
+        .set({
+      'id': id,
+      'name': name,
+      'rollNo': rollNo,
+      'email': email,
+      'contact': contact,
+      'attendanceStatus': attendanceStatus,
+      'currentDate': currentDate,
+      'description': description,
+      'userId': userId,
+      'userToken': userToken,
+    });
   }
 
   Future<void> allConfirmedLeave(
