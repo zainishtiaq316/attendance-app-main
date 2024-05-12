@@ -10,12 +10,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:studentattendance/models/usermodel.dart';
 import 'package:studentattendance/pages/homepage.dart';
+import 'package:studentattendance/screens/Profile/Profile_Screen.dart';
 import 'package:studentattendance/screens/Profile/myimagePicker.dart';
 import 'package:studentattendance/screens/Profile/uplader.dart';
 import 'package:studentattendance/utils/color_utils.dart';
 import 'package:studentattendance/utils/loadingIndicator.dart';
 
-import '../../Admin/AdminProfile.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -255,6 +255,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 pickImage = null;
               });
             });
+          
+          
           }
         }
       },
@@ -495,6 +497,42 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       pickImage = file;
                     });
                   }
+                   if (pickImage != null) {
+            loader(context);
+            final image = await uploaderService.uploadFile(
+                pickImage!, "Profile_Images", FileType.Image);
+
+            // await FirebaseDatabase.instance
+            //     .ref("Users")
+            //     .child(FirebaseAuth.instance.currentUser!.uid)
+            //     .update({"photoURL": image.downloadLink});
+            await FirebaseFirestore.instance
+                .collection("users")
+                .doc(FirebaseAuth.instance.currentUser!.uid)
+                .update({
+              "photoURL": image.downloadLink,
+            
+              // "firstName": firstNameEditingController.text.trim(),
+              // "secondName": lastNameEditingController.text.trim(),
+              // "phoneNumber": phoneNumberEditingController.text.trim(),
+          
+            }).catchError((e){
+               Fluttertoast.showToast(msg: e!.message);
+            });
+
+            await FirebaseAuth.instance.currentUser!
+                .updatePhotoURL(image.downloadLink)
+                .whenComplete(() {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => Profile()));
+
+              Fluttertoast.showToast(msg: "Profile Updated");
+
+              setState(() {
+                pickImage = null;
+              });
+            });
+                   }
                 },
               ),
               ListTile(
@@ -509,6 +547,42 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       pickImage = file;
                     });
                   }
+                   if (pickImage != null) {
+            loader(context);
+            final image = await uploaderService.uploadFile(
+                pickImage!, "Profile_Images", FileType.Image);
+
+            // await FirebaseDatabase.instance
+            //     .ref("Users")
+            //     .child(FirebaseAuth.instance.currentUser!.uid)
+            //     .update({"photoURL": image.downloadLink});
+            await FirebaseFirestore.instance
+                .collection("users")
+                .doc(FirebaseAuth.instance.currentUser!.uid)
+                .update({
+              "photoURL": image.downloadLink,
+            
+              // "firstName": firstNameEditingController.text.trim(),
+              // "secondName": lastNameEditingController.text.trim(),
+              // "phoneNumber": phoneNumberEditingController.text.trim(),
+          
+            }).catchError((e){
+               Fluttertoast.showToast(msg: e!.message);
+            });
+
+            await FirebaseAuth.instance.currentUser!
+                .updatePhotoURL(image.downloadLink)
+                .whenComplete(() {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => Profile()));
+
+              Fluttertoast.showToast(msg: "Profile Updated");
+
+              setState(() {
+                pickImage = null;
+              });
+            });
+                   }
                 },
               ),
             ],
