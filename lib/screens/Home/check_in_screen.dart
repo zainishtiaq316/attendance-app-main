@@ -24,6 +24,7 @@ class _markattState extends State<CheckInScreen> {
   final contactController = TextEditingController();
   final emailController = TextEditingController();
   final currentDateController = TextEditingController();
+  final currentTimeController = TextEditingController();
   final attendanceStatusController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
@@ -78,7 +79,13 @@ class _markattState extends State<CheckInScreen> {
     // Set the current date in the currentDateController
     //DateTime currentDate = DateTime.now();
     String formattedDate = DateFormat.yMd().format(DateTime.now());
+    String formattedTime1 = DateFormat.j().format(DateTime.now()); // e.g., "1 AM", "9 PM"
+    String formattedTime2 = DateFormat('h:mm a').format(DateTime.now()); // e.g., "1:15 AM", "9:45 PM"
+
     currentDateController.text = formattedDate;
+    currentTimeController.text = formattedTime2;
+
+    
     attendanceStatusController.text = "Check-In";
     // emailController.text = '${user!.email}';
     //contactController.text = '${user!.phoneNumber}';
@@ -558,6 +565,7 @@ class _markattState extends State<CheckInScreen> {
                           final attendanceStatus =
                               attendanceStatusController.text;
                           final currentDate = currentDateController.text;
+                          final  time = currentTimeController.text;
 
                           if (rollNo.isEmpty) {
                             showDialog(
@@ -588,9 +596,11 @@ class _markattState extends State<CheckInScreen> {
                               name,
                               rollNo,
                               email,
+                              time,
                               contact,
                               attendanceStatus,
                               currentDate,
+                              
                               userToken!,
                             ).whenComplete(() {
                               Navigator.pop(context);
@@ -673,6 +683,7 @@ Future<void> joinUplaod(
   String name,
   String rollNo,
   String email,
+  String time,
   String contact,
   String attendanceStatus,
   String currentDate,
@@ -692,6 +703,7 @@ Future<void> joinUplaod(
     'rollNo': rollNo,
     'contact': contact,
     'email': email,
+    'time':time,
     'attendanceStatus': attendanceStatus,
     'CurrentDate': currentDate,
     'userId': uid,

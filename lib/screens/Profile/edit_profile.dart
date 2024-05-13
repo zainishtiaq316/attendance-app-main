@@ -34,6 +34,34 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final emailEditingController = new TextEditingController();
     final phoneNumberEditingController = new TextEditingController();
     final rollNoNumberEditingController = new TextEditingController();
+    String? firstName;
+  String? lastName;
+  String? email;
+  String? phoneNumber;
+  String? rollNo;
+
+  // Fetch user data from Firestore
+  Future<void> fetchUserData() async {
+    DocumentSnapshot<Map<String, dynamic>> userData = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+
+    // Extract user data
+    setState(() {
+      firstNameEditingController.text = userData['firstName'];
+      lastNameEditingController.text = userData['secondName'];
+      emailEditingController.text = userData['email'];
+      phoneNumberEditingController.text = userData['phoneNumber'];
+      rollNoNumberEditingController.text = userData['rollNo'];
+    });
+  }
+  @override
+  void initState() {
+    super.initState();
+    // Call fetchUserData when the widget initializes
+    fetchUserData();
+  }
   File? pickImage;
   final _imgPicker = MyImagePicker();
   final UploaderService uploaderService = UploaderService();
@@ -220,44 +248,50 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       onTap: () async {
         if (_formKey.currentState!.validate()) {
           loader(context);
-          if (pickImage != null) {
-            loader(context);
-            final image = await uploaderService.uploadFile(
-                pickImage!, "Profile_Images", FileType.Image);
-
-            // await FirebaseDatabase.instance
-            //     .ref("Users")
-            //     .child(FirebaseAuth.instance.currentUser!.uid)
-            //     .update({"photoURL": image.downloadLink});
-            await FirebaseFirestore.instance
+          await FirebaseFirestore.instance
                 .collection("users")
                 .doc(FirebaseAuth.instance.currentUser!.uid)
                 .update({
-              "photoURL": image.downloadLink,
+              // "photoURL": image.downloadLink,
             
               "firstName": firstNameEditingController.text.trim(),
               "secondName": lastNameEditingController.text.trim(),
               "phoneNumber": phoneNumberEditingController.text.trim(),
           
-            }).catchError((e){
+            }).whenComplete((){
+               Fluttertoast.showToast(msg: "Profile Updated");
+            }).
+            
+            catchError((e){
                Fluttertoast.showToast(msg: e!.message);
             });
+            Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => Profile()));
+          // if (pickImage != null) {
+          //   loader(context);
+          //   final image = await uploaderService.uploadFile(
+          //       pickImage!, "Profile_Images", FileType.Image);
 
-            await FirebaseAuth.instance.currentUser!
-                .updatePhotoURL(image.downloadLink)
-                .whenComplete(() {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MyHomePage()));
+          //   // await FirebaseDatabase.instance
+          //   //     .ref("Users")
+          //   //     .child(FirebaseAuth.instance.currentUser!.uid)
+          //   //     .update({"photoURL": image.downloadLink});
+            
 
-              Fluttertoast.showToast(msg: "Profile Updated");
+          //   await FirebaseAuth.instance.currentUser!
+          //   //     .updatePhotoURL(image.downloadLink)
+          //   //     .whenComplete(() {
+              
 
-              setState(() {
-                pickImage = null;
-              });
-            });
+          //   //   Fluttertoast.showToast(msg: "Profile Updated");
+
+          //   //   setState(() {
+          //   //     pickImage = null;
+          //   //   });
+          //   // });
           
           
-          }
+          // }
         }
       },
       child: Container(
@@ -303,31 +337,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   },
                 ),
               ),
-      body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-          future:
-              FirebaseFirestore.instance.collection('users').doc(user?.uid).get(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                  child: CircularProgressIndicator(
-                color: kPColor,
-              )); // Loading indicator while fetching data
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else {
-              Map<String, dynamic>? userData = snapshot.data?.data();
-              String? firstName = userData?['firstName'];
-              String? SecondName = userData?['secondName'];
-              String? email = userData?['email'];
-              String? phoneNumber = userData?['phoneNumber'];
-              String? rollNo = userData?['rollNo'];
-      
-              // firstNameEditingController.text = firstName.toString();
-              // lastNameEditingController.text = SecondName.toString();
-              emailEditingController.text = email.toString();
-              // phoneNumberEditingController.text = phoneNumber.toString();
-              rollNoNumberEditingController.text = rollNo.toString();
-              return SingleChildScrollView(
+      body: SingleChildScrollView(
                 padding: EdgeInsets.symmetric(vertical: 20),
                 child: Form(
                   key: _formKey,
@@ -472,9 +482,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ],
                   ),
                 ),
-              );
-            }
-          }),
+              )
     );
   }
 
@@ -524,7 +532,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 .updatePhotoURL(image.downloadLink)
                 .whenComplete(() {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => Profile()));
+                  MaterialPageRoute(builder: (context) => EditProfileScreen()));
 
               Fluttertoast.showToast(msg: "Profile Updated");
 

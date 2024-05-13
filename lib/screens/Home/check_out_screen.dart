@@ -25,6 +25,7 @@ class _markattState extends State<CheckOutScreen> {
   final emailController = TextEditingController();
   final currentDateController = TextEditingController();
   final attendanceStatusController = TextEditingController();
+  final currentTimeController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   final auth = FirebaseAuth.instance;
@@ -80,8 +81,12 @@ class _markattState extends State<CheckOutScreen> {
     // Set the current date in the currentDateController
     //DateTime currentDate = DateTime.now();
     String formattedDate = DateFormat.yMd().format(DateTime.now());
+     String formattedTime1 = DateFormat.j().format(DateTime.now()); // e.g., "1 AM", "9 PM"
+    String formattedTime2 = DateFormat('h:mm a').format(DateTime.now()); // e.g., "1:15 AM", "9:45 PM"
     currentDateController.text = formattedDate;
-    attendanceStatusController.text = "Present";
+    currentTimeController.text = formattedTime2;
+
+    attendanceStatusController.text = "Check-Out";
     // emailController.text = '${user!.email}';
     //contactController.text = '${user!.phoneNumber}';
     //nameController.text = '${user!.displayName}';
@@ -112,12 +117,12 @@ class _markattState extends State<CheckOutScreen> {
           .collection('CheckOut')
           .where('CurrentDate', isEqualTo: currentDate)
           .get(),
-          FirebaseFirestore.instance
-          .collection('MarkAttendance')
-          .doc(userId) // Use the user ID as the document ID
-          .collection('CheckIn')
-          .where('CurrentDate', isEqualTo: currentDate)
-          .get(),
+          // FirebaseFirestore.instance
+          // .collection('MarkAttendance')
+          // .doc(userId) // Use the user ID as the document ID
+          // .collection('CheckIn')
+          // .where('CurrentDate', isEqualTo: currentDate)
+          // .get(),
       FirebaseFirestore.instance
           .collection('MarkAttendance')
           .doc(userId) // Use the user ID as the document ID
@@ -617,6 +622,7 @@ class _markattState extends State<CheckOutScreen> {
                 final contact = contactController.text;
                 final attendanceStatus = attendanceStatusController.text;
                 final currentDate = currentDateController.text;
+                   final  time = currentTimeController.text;
 
                 if (rollNo.isEmpty) {
                   showDialog(
@@ -647,6 +653,7 @@ class _markattState extends State<CheckOutScreen> {
                     name,
                     rollNo,
                     email,
+                    time,
                     contact,
                     attendanceStatus,
                     currentDate,
@@ -717,6 +724,7 @@ Future<void> joinUplaod(
   String name,
   String rollNo,
   String email,
+  time,
   String contact,
   String attendanceStatus,
   String currentDate,
@@ -736,6 +744,7 @@ Future<void> joinUplaod(
     'rollNo': rollNo,
     'contact': contact,
     'email': email,
+    'time':time,
     'attendanceStatus': attendanceStatus,
     'CurrentDate': currentDate,
     'userId': uid,

@@ -128,9 +128,9 @@ class _viewAttendanceState extends State<viewAttendance> {
             );
           }
 
-          final markAttendanceDocs = snapshot.data!.docs;
+          final markCheckInDocs = snapshot.data!.docs;
 
-          if (markAttendanceDocs.isEmpty) {
+          if (markCheckInDocs.isEmpty) {
             return Center(
               child: Text('No data found'),
             );
@@ -138,46 +138,184 @@ class _viewAttendanceState extends State<viewAttendance> {
 
           return ListView.builder(
             shrinkWrap: true,
-            itemCount: markAttendanceDocs.length,
+            itemCount: markCheckInDocs.length,
             itemBuilder: (context, index) {
-              final markAttendanceData =
-                  markAttendanceDocs[index].data() as Map<String, dynamic>;
-              final name = markAttendanceData['name'];
-              final rollNo = markAttendanceData['rollNo'];
-              final attendanceStatus = markAttendanceData['attendanceStatus'];
-              final currentDate = markAttendanceData['CurrentDate'];
+              final markCheckInData =
+                  markCheckInDocs[index].data() as Map<String, dynamic>;
+              final name = markCheckInData['name'];
+              final rollNo = markCheckInData['rollNo'];
+              final attendanceStatus = markCheckInData['attendanceStatus'];
+              final currentDate = markCheckInData['CurrentDate'];
 
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  child: InkWell(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 10),
-                          Text(
-                            "Name: $name",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: 5,),
-                          Text("Roll No: $rollNo", style: TextStyle(color: Colors.black, fontSize: 15),),
-                          SizedBox(height: 5,),
-                          Text("Attendance Status: $attendanceStatus",style: TextStyle(color: Colors.green.shade800, fontSize: 15),),
-                          SizedBox(height: 5,),
-                          Text("Current Date: $currentDate",style: TextStyle(color: Colors.black, fontSize: 15),),
-                          
-                          SizedBox(height: 10),
-                        ],
+              final CheckInTime = markCheckInData['time'];
+
+              return StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection("MarkAttendance")
+                    .doc(FirebaseAuth.instance.currentUser!.uid)
+                    .collection("CheckOut")
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
+
+                  if (!snapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: kPColor,
                       ),
-                    ),
-                  ),
-                ),
+                    );
+                  }
+
+                  final markCheckOutDocs = snapshot.data!.docs;
+
+                  if (markCheckOutDocs.isEmpty) {
+                    return Center(
+                      child: Text('No data found'),
+                    );
+                  }
+
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: markCheckOutDocs.length,
+                    itemBuilder: (context, index) {
+                      final markCheckOutData = markCheckOutDocs[index]
+                          .data() as Map<String, dynamic>;
+                      
+                      final attendanceStatusField =
+                          markCheckOutData['attendanceStatus'];
+                      
+                       final CheckOutTime = markCheckOutData['time'];
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          child: InkWell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: 10),
+                                  Text(
+                                    "Name: $name",
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    "Roll No: $rollNo",
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 15),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  
+                                  Row(
+                                    children: [
+                                      if(attendanceStatus == "Check-In")
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "Attendance Status: ",
+                                            style: TextStyle(
+                                                color: Colors.green.shade800,
+                                                fontSize: 15),
+                                          ),
+                                           Text(
+                                        "$attendanceStatus",
+                                        style: TextStyle(
+                                            color: Colors.green.shade800,
+                                            fontSize: 15),
+                                      ),
+                                        ],
+                                      ),
+                                      
+
+                                      if(attendanceStatusField == "Check-Out")
+
+                                        Row(
+                                          children: [
+                                            Text(
+                                        " & ",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 15),
+                                      ),
+                                       Text(
+                                        "$attendanceStatusField",
+                                        style: TextStyle(
+                                            color: Colors.red.shade800,
+                                            fontSize: 15),
+                                      ),
+                                          ],
+                                        )
+
+
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                 
+                                  Text(
+                                    "Current Date: $currentDate",
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 15),
+                                  ),
+                                  SizedBox(height: 10),
+
+                                  Row(
+                                    children: [
+                                       if(attendanceStatus == "Check-In")
+                                      Row(
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context).size.width*0.1,
+                                          
+                                            height: MediaQuery.of(context).size.height*0.04,
+                                           child: Image.asset("assets/images/checkin.png", color: Colors.green.shade800,), 
+                                          ),
+
+                                          SizedBox(width: 5,),
+                                          Text(CheckInTime, style: TextStyle(color: Colors.black, fontSize: 15),)
+                                        ],
+                                      )
+,
+                                      SizedBox(width: 20,),
+                                       if(attendanceStatusField == "Check-Out")
+                                       Row(
+                                         children: [
+                                           Container(
+                                            width: MediaQuery.of(context).size.width*0.1,
+                                           
+                                            height: MediaQuery.of(context).size.height*0.04,
+                                           child: Image.asset("assets/images/checkout.png", color: Colors.red.shade800,), 
+                                           
+                                                                                 ),
+                                                                                  SizedBox(width: 5,),
+                                          Text("$CheckOutTime", style: TextStyle(color: Colors.black, fontSize: 15),)
+                                        
+                                         ],
+                                       )
+                                    ],
+                                  ),
+                                  SizedBox(height: 10),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
               );
             },
           );
@@ -230,7 +368,7 @@ class _viewAttendanceState extends State<viewAttendance> {
               final attendanceStatus = confirmedLeavesData['attendanceStatus'];
               final currentDate = confirmedLeavesData['currentDate'];
 
-              return   Padding(
+              return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Card(
                   child: InkWell(
@@ -248,13 +386,28 @@ class _viewAttendanceState extends State<viewAttendance> {
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold),
                           ),
-                          SizedBox(height: 5,),
-                          Text("Roll No: $rollNo", style: TextStyle(color: Colors.black, fontSize: 15),),
-                          SizedBox(height: 5,),
-                          Text("Attendance Status: $attendanceStatus",style: TextStyle(color: Colors.green.shade800, fontSize: 15),),
-                          SizedBox(height: 5,),
-                          Text("Current Date: $currentDate",style: TextStyle(color: Colors.black, fontSize: 15),),
-                          
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            "Roll No: $rollNo",
+                            style: TextStyle(color: Colors.black, fontSize: 15),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            "Attendance Status: $attendanceStatus",
+                            style: TextStyle(
+                                color: Colors.green.shade800, fontSize: 15),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            "Current Date: $currentDate",
+                            style: TextStyle(color: Colors.black, fontSize: 15),
+                          ),
                           SizedBox(height: 10),
                         ],
                       ),
@@ -262,7 +415,6 @@ class _viewAttendanceState extends State<viewAttendance> {
                   ),
                 ),
               );
-            
             },
           );
         },
