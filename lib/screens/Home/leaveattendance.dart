@@ -75,7 +75,7 @@ class _leaveAttendanceState extends State<leaveAttendance> {
     // Set the current date in the currentDateController
     //DateTime currentDate = DateTime.now();
     String formattedDate = DateFormat.yMd().format(DateTime.now());
-     String formattedTime1 = DateFormat.j().format(DateTime.now()); // e.g., "1 AM", "9 PM"
+    //  String formattedTime1 = DateFormat.j().format(DateTime.now()); // e.g., "1 AM", "9 PM"
     String formattedTime2 = DateFormat('h:mm a').format(DateTime.now()); // e.g., "1:15 AM", "9:45 PM"
 
     currentDateController.text = formattedDate;

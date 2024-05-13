@@ -87,6 +87,7 @@ class _LeaveRequestsState extends State<LeaveRequests> {
                                     description: list['description'],
                                     userId: list['userId'],
                                     userToken: list['userToken'],
+                                    time: list['time']
                                   ),
                                 )));
                   },

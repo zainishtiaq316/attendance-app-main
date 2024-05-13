@@ -168,6 +168,26 @@ class _leavedetailsState extends State<leavedetails> {
               ],
             ),
           ),
+            Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Time:",
+                  style: GoogleFonts.openSans(
+                      fontSize: 13, color: black, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  widget.joinModel.time,
+                  style: GoogleFonts.openSans(
+                    color: black,
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+          ),
 
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
@@ -210,6 +230,7 @@ class _leavedetailsState extends State<leavedetails> {
                               description: widget.joinModel.description,
                               userId: widget.joinModel.userId,
                               userToken: widget.joinModel.userToken,
+                              time: widget.joinModel.time,
                             )));
               },
               style: ElevatedButton.styleFrom(

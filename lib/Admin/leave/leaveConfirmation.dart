@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter/cupertino.dart';
+import 'package:studentattendance/Admin/AdminHome.dart';
 
 import '../../utils/color_utils.dart';
 import '../../utils/loadingIndicator.dart';
@@ -19,6 +20,7 @@ class leaveConfiramtion extends StatefulWidget {
     required this.attendanceStatus,
     required this.currentDate,
     required this.description,
+    required this.time,
     required this.userId,
     required this.userToken,
   });
@@ -28,7 +30,7 @@ class leaveConfiramtion extends StatefulWidget {
   final String email;
   final String contact;
   final String attendanceStatus;
-
+  final String time;
   final String currentDate;
   final String description;
   final String userId;
@@ -46,6 +48,7 @@ class _leaveConfiramtionState extends State<leaveConfiramtion> {
       String name,
       String rollNo,
       String email,
+      String time,
       String contact,
       String attendanceStatus,
       String currentDate,
@@ -62,6 +65,7 @@ class _leaveConfiramtionState extends State<leaveConfiramtion> {
       'name': name,
       'rollNo': rollNo,
       'email': email,
+      'time' : time,
       'contact': contact,
       'attendanceStatus': attendanceStatus,
       'currentDate': currentDate,
@@ -79,6 +83,7 @@ class _leaveConfiramtionState extends State<leaveConfiramtion> {
       'name': name,
       'rollNo': rollNo,
       'email': email,
+      'time':time,
       'contact': contact,
       'attendanceStatus': attendanceStatus,
       'currentDate': currentDate,
@@ -93,6 +98,7 @@ class _leaveConfiramtionState extends State<leaveConfiramtion> {
       String name,
       String rollNo,
       String email,
+      String time,
       String contact,
       String attendanceStatus,
       String currentDate,
@@ -106,6 +112,7 @@ class _leaveConfiramtionState extends State<leaveConfiramtion> {
       'name': name,
       'rollNo': rollNo,
       'email': email,
+      'time':time,
       'contact': contact,
       'attendanceStatus': attendanceStatus,
       'currentDate': currentDate,
@@ -207,6 +214,7 @@ class _leaveConfiramtionState extends State<leaveConfiramtion> {
                           widget.name,
                           widget.rollNo,
                           widget.email,
+                          widget.time,
                           widget.contact,
                           widget.attendanceStatus,
                           widget.currentDate,
@@ -218,6 +226,7 @@ class _leaveConfiramtionState extends State<leaveConfiramtion> {
                           widget.name,
                           widget.rollNo,
                           widget.email,
+                          widget.time,
                           widget.contact,
                           widget.attendanceStatus,
                           widget.currentDate,
@@ -231,7 +240,7 @@ class _leaveConfiramtionState extends State<leaveConfiramtion> {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AdminBottomNav()));
+                              builder: (context) => AdminHome()));
                     }
                   },
                   child: Text(

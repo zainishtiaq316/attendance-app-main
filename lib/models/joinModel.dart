@@ -13,12 +13,14 @@ class JoinModel {
   final String description;
   final String userId;
   final String userToken;
+  final String time;
   JoinModel({
     required this.id,
     required this.name,
     required this.rollNo,
     required this.email,
     required this.contact,
+    required this.time,
     required this.attendanceStatus,
     required this.currentDate,
     required this.description,
@@ -53,6 +55,7 @@ class JoinModel {
       description: map['description'] as String,
       userId: map['userId'] as String,
       userToken: map['userToken'] as String,
+      time: map['time'] as String
     );
   }
 

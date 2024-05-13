@@ -362,6 +362,7 @@ Widget buildViewAttendance() {
               final rollNo = confirmedLeavesData['rollNo'];
               final attendanceStatus = confirmedLeavesData['attendanceStatus'];
               final currentDate = confirmedLeavesData['currentDate'];
+              final leave = confirmedLeavesData['time'];
 
               return Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -404,6 +405,30 @@ Widget buildViewAttendance() {
                             style: TextStyle(color: Colors.black, fontSize: 15),
                           ),
                           SizedBox(height: 10),
+                           Row(
+                             children: [
+                               Container(
+                                            width:
+                                                MediaQuery.of(context).size.width *
+                                                    0.1,
+                                            height:
+                                                MediaQuery.of(context).size.height *
+                                                    0.04,
+                                            child: Image.asset(
+                                              "assets/images/leave.png",
+                                              color: Colors.purple.shade800,
+                                            ),
+                                          ),
+                              
+                              SizedBox(width: 5,),
+                              Text("$leave",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 15)),
+                             
+                             ],
+                           ),
+                           SizedBox(height: 10),
                         ],
                       ),
                     ),
