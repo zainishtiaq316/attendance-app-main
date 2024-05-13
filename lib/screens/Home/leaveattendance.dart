@@ -141,6 +141,7 @@ class _leaveAttendanceState extends State<leaveAttendance> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: kPColor,
         elevation: 0,

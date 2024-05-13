@@ -137,6 +137,7 @@ class _markattState extends State<CheckInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: kPColor,
         elevation: 0,

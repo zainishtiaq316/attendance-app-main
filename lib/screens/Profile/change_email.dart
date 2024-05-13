@@ -101,6 +101,7 @@ class _ChangeEmailScreenState extends State<ChangeEmail> {
         if (_formKey.currentState!.validate()) {
           loader(context);
           // ignore: deprecated_member_use
+          await FirebaseAuth.instance.currentUser?.updateEmail(emailController.text.trim());
           
           await FirebaseFirestore.instance
               .collection("users")
@@ -109,7 +110,7 @@ class _ChangeEmailScreenState extends State<ChangeEmail> {
             "email": emailController.text.trim(),
           });
           // ignore: deprecated_member_use
-          await _auth.currentUser?.updateEmail(emailController.text.trim());
+          
 
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => SettingScreen()));
@@ -144,6 +145,7 @@ class _ChangeEmailScreenState extends State<ChangeEmail> {
     );
 
     return Scaffold(
+      
       appBar: AppBar(
         backgroundColor: kPColor,
         elevation: 0,

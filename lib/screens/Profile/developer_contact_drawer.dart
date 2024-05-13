@@ -71,7 +71,10 @@ class _DeveloperContactDrawerState extends State<DeveloperContactDrawer> {
        onWillPop: onWillPop,
       child: Scaffold(
         //backgroundColor: Colors.grey.shade200,
+        
        appBar: AppBar(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
             actionsIconTheme: IconThemeData(color: Colors.blue),
             title: Text(
               "Contact",

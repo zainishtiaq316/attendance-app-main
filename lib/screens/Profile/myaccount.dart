@@ -76,6 +76,7 @@ class _AccountInfoState extends State<AccountInfo> {
     String? name = user?.displayName;
     String? imageUrl = user?.photoURL;
     return Scaffold(
+      backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: kPColor,
           elevation: 0,

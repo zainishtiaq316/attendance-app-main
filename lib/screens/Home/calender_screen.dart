@@ -24,7 +24,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: Colors.white,
+      
       appBar: AppBar(
         backgroundColor: kPColor,
         elevation: 0,

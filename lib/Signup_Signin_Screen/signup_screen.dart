@@ -353,7 +353,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       //   ),
       // ),
 
-      // backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       body: Container(
         height: height,
         child: Stack(

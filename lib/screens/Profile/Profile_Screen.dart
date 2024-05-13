@@ -65,7 +65,10 @@ class _ProfileState extends State<Profile> {
     return WillPopScope(
        onWillPop: onWillPop,
       child: Scaffold(
+        backgroundColor: Colors.white,
           appBar: AppBar(
+            backgroundColor: Colors.white,
+            surfaceTintColor: Colors.white,
             actionsIconTheme: IconThemeData(color: Colors.blue),
             title: Text(
               "Porfile",

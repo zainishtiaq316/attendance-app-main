@@ -192,6 +192,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     );
 
     return Scaffold(
+      
       appBar: AppBar(
         backgroundColor: kPColor,
         elevation: 0,
