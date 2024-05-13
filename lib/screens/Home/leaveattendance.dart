@@ -24,6 +24,7 @@ class _leaveAttendanceState extends State<leaveAttendance> {
   final contactController = TextEditingController();
   final emailController = TextEditingController();
   final currentDateController = TextEditingController();
+  final currentTimeController = TextEditingController();
   final attendanceStatusController = TextEditingController();
   final descriptionController = TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -74,7 +75,12 @@ class _leaveAttendanceState extends State<leaveAttendance> {
     // Set the current date in the currentDateController
     //DateTime currentDate = DateTime.now();
     String formattedDate = DateFormat.yMd().format(DateTime.now());
+     String formattedTime1 = DateFormat.j().format(DateTime.now()); // e.g., "1 AM", "9 PM"
+    String formattedTime2 = DateFormat('h:mm a').format(DateTime.now()); // e.g., "1:15 AM", "9:45 PM"
+
     currentDateController.text = formattedDate;
+        currentTimeController.text = formattedTime2;
+
     attendanceStatusController.text = "Leave";
     //emailController.text = '${user!.email}';
     //contactController.text = user!.phoneNumber ?? '';
@@ -586,6 +592,7 @@ class _leaveAttendanceState extends State<leaveAttendance> {
                                 attendanceStatusController.text;
                             final currentDate = currentDateController.text;
                             final description = descriptionController.text;
+                            final  time = currentTimeController.text;
 
                             if (rollNo.isEmpty) {
                               showDialog(
@@ -618,6 +625,7 @@ class _leaveAttendanceState extends State<leaveAttendance> {
                                 name,
                                 rollNo,
                                 email,
+                                time,
                                 contact,
                                 attendanceStatus,
                                 userToken!,
@@ -698,6 +706,7 @@ Future<void> joinUplaod(
     String name,
     String rollNo,
     String email,
+    String time,
     String contact,
     String attendanceStatus,
     String userToken,
@@ -711,6 +720,7 @@ Future<void> joinUplaod(
     'rollNo': rollNo,
     'contact': contact,
     'email': email,
+    'time':time,
     'attendanceStatus': attendanceStatus,
     'CurrentDate': currentDate,
     'description': description,
