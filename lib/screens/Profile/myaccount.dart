@@ -169,10 +169,13 @@ class _AccountInfoState extends State<AccountInfo> {
                                  loader(context);
                                 await FirebaseAuth.instance.currentUser!
                                     .delete();
+                                 await FirebaseFirestore.instance.collection("users").doc(user!.uid).delete();
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => SplashScreen()));
+
+                             
                               }).show();
                         },
                         child: Padding(
