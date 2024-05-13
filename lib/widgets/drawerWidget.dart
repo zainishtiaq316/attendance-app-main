@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:studentattendance/Signup_Signin_Screen/splash.dart';
+import 'package:studentattendance/screens/Home/Home_page.dart';
 import 'package:studentattendance/screens/Profile/Profile_Screen.dart';
 import 'package:studentattendance/screens/Profile/developer_contact_drawer.dart';
 import 'package:studentattendance/utils/color_utils.dart';
@@ -97,7 +98,7 @@ class DrawerWidget extends StatelessWidget {
                   ),
                   child: InkWell(
                     onTap: (){
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomeScreen()));
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePageView()));
                     },
                     child: ListTile(
                       titleAlignment: ListTileTitleAlignment.center,

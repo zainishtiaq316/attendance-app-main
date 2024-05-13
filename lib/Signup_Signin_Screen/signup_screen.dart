@@ -528,7 +528,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         .collection("users")
         .doc(user.uid)
         .set(userModel.toMap());
-    Fluttertoast.showToast(msg: "Verification mail sent to your account");
+    Fluttertoast.showToast(msg: "Successful SignUp, please Signin");
     Navigator.pushAndRemoveUntil(
         (context),
         MaterialPageRoute(builder: (context) => LoginScreen()),

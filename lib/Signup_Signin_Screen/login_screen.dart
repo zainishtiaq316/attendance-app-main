@@ -15,6 +15,7 @@ import 'package:studentattendance/widgets/bezier-container.dart';
 
 import '../models/usermodel.dart';
 import '../pages/homepage.dart';
+import '../screens/Home/Home_page.dart';
 import '../utils/loadingIndicator.dart';
 import 'admin.dart';
 //import 'package:fluttertoast/fluttertoast.dart'
@@ -102,7 +103,7 @@ bool _obscurePassword = true;
                 }),
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
                     builder: (context) =>
-                        role == "Admin" ? AdminHome() : MyHomePage()))
+                        role == "Admin" ? AdminHome() : HomePageView()))
                 // }
                 // else
                 //   {

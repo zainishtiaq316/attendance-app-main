@@ -20,81 +20,76 @@ class _viewAttendanceState extends State<viewAttendance> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: kPColor,
-        elevation: 0,
-        centerTitle: true,
-        title: const Text(
-          "View Attendance",
-          style: TextStyle(color: Colors.white),
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-          onPressed: () {
-            //passing this to a route
-            Navigator.of(context).pop();
-          },
-        ),
-      ),
-      body: Column(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 30, left: 15, right: 15),
-            child: Row(
+            padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedButton = 'View Attendance';
-                      });
-                    },
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.5,
-                      height: MediaQuery.of(context).size.height * 0.05,
-                      decoration: BoxDecoration(
-                          color: Colors.green.shade800,
-                          borderRadius: BorderRadius.circular(30)),
-                      child: Center(
-                          child: Text(
-                        "Check In/Out",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold),
-                      )),
-                    ),
-                  ),
+                Text(
+                  "View Attendance",
+                  style: TextStyle(color: Colors.grey.shade600, fontSize: 30, fontWeight: FontWeight.w700),
                 ),
-                SizedBox(
-                  width: 15,
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedButton = 'Leave Attendance';
-                      });
-                    },
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.5,
-                      height: MediaQuery.of(context).size.height * 0.05,
-                      decoration: BoxDecoration(
-                          color: Colors.red.shade800,
-                          borderRadius: BorderRadius.circular(30)),
-                      child: Center(
-                          child: Text(
-                        "Leaves",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold),
-                      )),
+                SizedBox(height: 20,),
+                Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedButton = 'View Attendance';
+                          });
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          height: MediaQuery.of(context).size.height * 0.05,
+                          decoration: BoxDecoration(
+                              color: Colors.green.shade800,
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Center(
+                              child: Text(
+                            "Check In/Out",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold),
+                          )),
+                        ),
+                      ),
                     ),
-                  ),
-                )
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedButton = 'Leave Attendance';
+                          });
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          height: MediaQuery.of(context).size.height * 0.05,
+                          decoration: BoxDecoration(
+                              color: Colors.red.shade800,
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Center(
+                              child: Text(
+                            "Leaves",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold),
+                          )),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ],
             ),
           ),
@@ -102,223 +97,229 @@ class _viewAttendanceState extends State<viewAttendance> {
             child: _selectedButton == 'View Attendance'
                 ? buildViewAttendance()
                 : buildLeaveAttendance(),
-          )
+          ),
+
+           SizedBox(height: 80,)
         ],
-      ),
-    );
+      );
   }
 
-Widget buildViewAttendance() {
-  return SingleChildScrollView(
-    child: StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection("MarkAttendance")
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .collection("CheckIn")
-          .snapshots(),
-      builder: (context, checkInSnapshot) {
-        if (checkInSnapshot.hasError) {
-          return Text('Error: ${checkInSnapshot.error}');
-        }
+  Widget buildViewAttendance() {
+    return SingleChildScrollView(
+      child: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection("MarkAttendance")
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection("CheckIn")
+            .snapshots(),
+        builder: (context, checkInSnapshot) {
+          if (checkInSnapshot.hasError) {
+            return Text('Error: ${checkInSnapshot.error}');
+          }
 
-        if (!checkInSnapshot.hasData) {
-          return Center(
-            child: CircularProgressIndicator(
-              color: kPColor,
-            ),
-          );
-        }
+          if (!checkInSnapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: kPColor,
+              ),
+            );
+          }
 
-        final markCheckInDocs = checkInSnapshot.data!.docs;
+          final markCheckInDocs = checkInSnapshot.data!.docs;
 
-        if (markCheckInDocs.isEmpty) {
-          return Center(
-            child: Text('No check-in data found'),
-          );
-        }
+          if (markCheckInDocs.isEmpty) {
+            return Center(
+              child: Text('No check-in data found'),
+            );
+          }
 
-        return ListView.builder(
-          shrinkWrap: true,
-          itemCount: markCheckInDocs.length,
-          itemBuilder: (context, index) {
-            final markCheckInData =
-                markCheckInDocs[index].data() as Map<String, dynamic>;
-            final name = markCheckInData['name'];
-            final rollNo = markCheckInData['rollNo'];
-            final attendanceStatus = markCheckInData['attendanceStatus'];
-            final currentDate = markCheckInData['CurrentDate'];
-            final CheckInTime = markCheckInData['time'];
+          return ListView.builder(
+            shrinkWrap: true,
+            itemCount: markCheckInDocs.length,
+            itemBuilder: (context, index) {
+              final markCheckInData =
+                  markCheckInDocs[index].data() as Map<String, dynamic>;
+              final name = markCheckInData['name'];
+              final rollNo = markCheckInData['rollNo'];
+              final attendanceStatus = markCheckInData['attendanceStatus'];
+              final currentDate = markCheckInData['CurrentDate'];
+              final CheckInTime = markCheckInData['time'];
 
-            return StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection("MarkAttendance")
-                  .doc(FirebaseAuth.instance.currentUser!.uid)
-                  .collection("CheckOut")
-                  .snapshots(),
-              builder: (context, checkOutSnapshot) {
-                if (checkOutSnapshot.hasError) {
-                  return Text('Error: ${checkOutSnapshot.error}');
-                }
+              return StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection("MarkAttendance")
+                    .doc(FirebaseAuth.instance.currentUser!.uid)
+                    .collection("CheckOut")
+                    .snapshots(),
+                builder: (context, checkOutSnapshot) {
+                  if (checkOutSnapshot.hasError) {
+                    return Text('Error: ${checkOutSnapshot.error}');
+                  }
 
-                if (!checkOutSnapshot.hasData) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: kPColor,
-                    ),
-                  );
-                }
+                  if (!checkOutSnapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: kPColor,
+                      ),
+                    );
+                  }
 
-                final markCheckOutDocs = checkOutSnapshot.data!.docs;
+                  final markCheckOutDocs = checkOutSnapshot.data!.docs;
 
-                final hasCheckedOut = markCheckOutDocs.isNotEmpty;
-                final markCheckOutData = hasCheckedOut
-                    ? markCheckOutDocs[index].data() as Map<String, dynamic>
-                    : null;
-                final attendanceStatusField =
-                    hasCheckedOut ? markCheckOutData!['attendanceStatus'] : null;
-                final CheckOutTime =
-                    hasCheckedOut ? markCheckOutData!['time'] : null;
+                  final hasCheckedOut = markCheckOutDocs.isNotEmpty;
+                  final markCheckOutData = hasCheckedOut
+                      ? markCheckOutDocs[index].data() as Map<String, dynamic>
+                      : null;
+                  final attendanceStatusField = hasCheckedOut
+                      ? markCheckOutData!['attendanceStatus']
+                      : null;
+                  final CheckOutTime =
+                      hasCheckedOut ? markCheckOutData!['time'] : null;
 
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Card(
-                    child: InkWell(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(height: 10),
-                            Text(
-                              "Name: $name",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              "Roll No: $rollNo",
-                              style: TextStyle(
-                                  color: Colors.black, fontSize: 15),
-                            ),
-                            SizedBox(height: 5),
-                            Row(
-                              children: [
-                                if (attendanceStatus == "Check-In")
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "Attendance Status: ",
-                                        style: TextStyle(
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Card(
+                      child: InkWell(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 10),
+                              Text(
+                                "Name: $name",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 5),
+                              Text(
+                                "Roll No: $rollNo",
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 15),
+                              ),
+                              SizedBox(height: 5),
+                              Row(
+                                children: [
+                                  if (attendanceStatus == "Check-In")
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "Attendance Status: ",
+                                          style: TextStyle(
+                                              color: Colors.green.shade800,
+                                              fontSize: 15),
+                                        ),
+                                        Text(
+                                          "$attendanceStatus",
+                                          style: TextStyle(
+                                              color: Colors.green.shade800,
+                                              fontSize: 15),
+                                        ),
+                                      ],
+                                    ),
+                                  if (attendanceStatusField == "Check-Out")
+                                    Row(
+                                      children: [
+                                        Text(
+                                          " & ",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 15),
+                                        ),
+                                        Text(
+                                          "$attendanceStatusField",
+                                          style: TextStyle(
+                                              color: Colors.red.shade800,
+                                              fontSize: 15),
+                                        ),
+                                      ],
+                                    )
+                                ],
+                              ),
+                              SizedBox(height: 5),
+                              Text(
+                                "Current Date: $currentDate",
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 15),
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  if (attendanceStatus == "Check-In")
+                                    Row(
+                                      children: [
+                                        Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.1,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.04,
+                                          child: Image.asset(
+                                            "assets/images/checkin.png",
                                             color: Colors.green.shade800,
-                                            fontSize: 15),
-                                      ),
-                                      Text(
-                                        "$attendanceStatus",
-                                        style: TextStyle(
-                                            color: Colors.green.shade800,
-                                            fontSize: 15),
-                                      ),
-                                    ],
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(CheckInTime,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 15)),
+                                      ],
+                                    ),
+                                  SizedBox(
+                                    width: 20,
                                   ),
-                                if (attendanceStatusField == "Check-Out")
-                                  Row(
-                                    children: [
-                                      Text(
-                                        " & ",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 15),
-                                      ),
-                                      Text(
-                                        "$attendanceStatusField",
-                                        style: TextStyle(
+                                  if (attendanceStatusField == "Check-Out")
+                                    Row(
+                                      children: [
+                                        Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.1,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.04,
+                                          child: Image.asset(
+                                            "assets/images/checkout.png",
                                             color: Colors.red.shade800,
-                                            fontSize: 15),
-                                      ),
-                                    ],
-                                  )
-                              ],
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              "Current Date: $currentDate",
-                              style: TextStyle(
-                                  color: Colors.black, fontSize: 15),
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              children: [
-                                if (attendanceStatus == "Check-In")
-                                  Row(
-                                    children: [
-                                      Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.1,
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.04,
-                                        child: Image.asset(
-                                          "assets/images/checkin.png",
-                                          color: Colors.green.shade800,
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(CheckInTime,
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15)),
-                                    ],
-                                  ),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                if (attendanceStatusField == "Check-Out")
-                                  Row(
-                                    children: [
-                                      Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.1,
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.04,
-                                        child: Image.asset(
-                                          "assets/images/checkout.png",
-                                          color: Colors.red.shade800,
+                                        SizedBox(
+                                          width: 5,
                                         ),
-                                      ),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text("$CheckOutTime",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15)),
-                                    ],
-                                  )
-                              ],
-                            ),
-                            SizedBox(height: 10),
-                          ],
+                                        Text("$CheckOutTime",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 15)),
+                                      ],
+                                    )
+                                ],
+                              ),
+                              SizedBox(height: 10),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
-            );
-          },
-        );
-      },
-    ),
-  );
-}
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
 
   Widget buildLeaveAttendance() {
     return SingleChildScrollView(
@@ -406,30 +407,26 @@ Widget buildViewAttendance() {
                             style: TextStyle(color: Colors.black, fontSize: 15),
                           ),
                           SizedBox(height: 10),
-                           Row(
-                             children: [
-                               Container(
-                                            width:
-                                                MediaQuery.of(context).size.width *
-                                                    0.1,
-                                            height:
-                                                MediaQuery.of(context).size.height *
-                                                    0.04,
-                                            child: Image.asset(
-                                              "assets/images/leave.png",
-                                              color: Colors.purple.shade800,
-                                            ),
-                                          ),
-                              
-                              SizedBox(width: 5,),
+                          Row(
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.1,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.04,
+                                child: Image.asset(
+                                  "assets/images/leave.png",
+                                  color: Colors.purple.shade800,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
                               Text("$leave",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15)),
-                             
-                             ],
-                           ),
-                           SizedBox(height: 10),
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 15)),
+                            ],
+                          ),
+                          SizedBox(height: 10),
                         ],
                       ),
                     ),

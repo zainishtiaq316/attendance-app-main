@@ -46,7 +46,7 @@ class _markattState extends State<markatt> {
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.7,
-                  height: MediaQuery.of(context).size.height * 0.08,
+                  height: MediaQuery.of(context).size.height * 0.3,
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [Colors.blue.shade200, Colors.blue.shade900],
@@ -95,7 +95,7 @@ class _markattState extends State<markatt> {
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.7,
-                  height: MediaQuery.of(context).size.height * 0.08,
+                  height: MediaQuery.of(context).size.height * 0.3,
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [Colors.red.shade200, Colors.red.shade900],
