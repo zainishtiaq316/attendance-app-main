@@ -22,7 +22,6 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
- 
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -40,13 +39,13 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(bottom: 20.0),
+            margin: EdgeInsets.only(bottom: 30.0),
             width: MediaQuery.of(context).size.width,
             alignment: Alignment.center,
             child: Text(
               "Developed by Zain Ishtiaq",
               style: TextStyle(
-                  color: Colors.black,
+                  color: Colors.grey.shade700,
                   fontSize: 12,
                   fontWeight: FontWeight.bold),
             ),
