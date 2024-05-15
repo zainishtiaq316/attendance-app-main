@@ -22,21 +22,36 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
-  @override
+ 
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Set your desired background color
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Add your app logo or any other UI elements
-            Image.asset(
-                'assets/images/logo.png'), // Replace with your actual logo path
-            SizedBox(height: 16),
-            //CircularProgressIndicator(), // Add a loading indicator if desired
-          ],
-        ),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
+      body: Container(
+        child: Column(children: [
+          Expanded(
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              alignment: Alignment.center,
+              child: Image.asset('assets/images/logo.png'),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(bottom: 20.0),
+            width: MediaQuery.of(context).size.width,
+            alignment: Alignment.center,
+            child: Text(
+              "Developed by Zain Ishtiaq",
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold),
+            ),
+          )
+        ]),
       ),
     );
   }

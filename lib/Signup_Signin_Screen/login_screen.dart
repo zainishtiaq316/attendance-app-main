@@ -16,7 +16,6 @@ import '../models/usermodel.dart';
 import '../pages/homepage.dart';
 import '../screens/Home/Home_page.dart';
 import '../utils/loadingIndicator.dart';
-import 'admin.dart';
 //import 'package:fluttertoast/fluttertoast.dart'
 
 class LoginScreen extends StatefulWidget {
