@@ -89,6 +89,7 @@ bool _obscurePassword = true;
     String password,
   ) async {
     if (_formKey.currentState!.validate()) {
+      loader(context);
       await _auth
           .signInWithEmailAndPassword(email: email, password: password)
           .then((uid) async => {
@@ -99,6 +100,7 @@ bool _obscurePassword = true;
                 setState(() {
                   role = loggedInUser.role;
                 }),
+                 Fluttertoast.showToast(msg: "Signin Successful !"),
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
                     builder: (context) =>
                         role == "Admin" ? AdminHome() : HomePageView()))
@@ -110,7 +112,8 @@ bool _obscurePassword = true;
                 //   }
               })
           .catchError((e) {
-        Fluttertoast.showToast(msg: e!.message);
+            Navigator.pop(context);
+        Fluttertoast.showToast(msg: "Error found, check email or password !");
       });
     }
   }
@@ -213,13 +216,10 @@ bool _obscurePassword = true;
     //loginButton
     final loginButton = GestureDetector(
        onTap: () async {
-          if (_formKey.currentState!.validate()) {
-            loader(context);
-            await sigIn(
+           await sigIn(
               emailController.text,
               passwordController.text,
             );
-          }
         },
       child: Container(
         width: MediaQuery.of(context).size.width,

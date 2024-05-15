@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:studentattendance/screens/Profile/Profile_Screen.dart';
 import 'package:studentattendance/utils/color_utils.dart';
 import 'package:studentattendance/utils/loadingIndicator.dart';
 
@@ -142,14 +144,15 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 // Update the password
                 await loader(context);
                 await user.updatePassword(passwordEditingController.text);
-                Navigator.pop(context);
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Profile()));
                 // Password updated successfully
-                print('Password updated successfully');
+               Fluttertoast.showToast(msg: "Password updated successfully");
                 // You can navigate to another screen or show a success message here
               }
             } catch (e) {
               // Handle any errors that occur during password update
-              print('Error updating password: $e');
+              Navigator.pop(context);
+              Fluttertoast.showToast(msg: "Error $e");
               
               // Show error message to the user
               // You can also handle specific error cases and show different messages

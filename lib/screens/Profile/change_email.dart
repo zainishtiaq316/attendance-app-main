@@ -97,52 +97,64 @@ class _ChangeEmailScreenState extends State<ChangeEmail> {
             filled: true));
     //changeEmail button
     final changeEmail = GestureDetector(
-      onTap: () async {
-        if (_formKey.currentState!.validate()) {
-          loader(context);
-          // ignore: deprecated_member_use
-          await FirebaseAuth.instance.currentUser?.updateEmail(emailController.text.trim());
-          
-          await FirebaseFirestore.instance
-              .collection("users")
-              .doc(FirebaseAuth.instance.currentUser!.uid)
-              .update({
-            "email": emailController.text.trim(),
-          });
-          // ignore: deprecated_member_use
-          
+  onTap: () async {
+    try {
+      if (_formKey.currentState!.validate()) {
+        loader(context);
+        // ignore: deprecated_member_use
+        
+        await FirebaseAuth.instance.currentUser?.updateEmail(emailController.text.trim());
+        
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .update({
+          "email": emailController.text.trim(),
+        });
 
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => SettingScreen()));
+        Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => SettingScreen()));
 
-          Fluttertoast.showToast(msg: "Email Changed");
-        }
-      },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.symmetric(vertical: 15),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(5)),
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                  color: Colors.grey.shade200,
-                  offset: Offset(2, 4),
-                  blurRadius: 5,
-                  spreadRadius: 2)
-            ],
-            gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [Color(0xfffbb448), Color(0xfff7892b)])),
-        child: Text(
-          "Change Email",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
-        ),
+        Fluttertoast.showToast(msg: "Email Changed");
+      }
+    } catch (e) {
+      Navigator.pop(context);
+      print("Error while changing email: $e");
+      Fluttertoast.showToast(msg: "Error occurred while changing email");
+      // Handle the error here, e.g., show an error message to the user
+    }
+  },
+  child: Container(
+    width: MediaQuery.of(context).size.width,
+    padding: EdgeInsets.symmetric(vertical: 15),
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.all(Radius.circular(5)),
+      boxShadow: <BoxShadow>[
+        BoxShadow(
+          color: Colors.grey.shade200,
+          offset: Offset(2, 4),
+          blurRadius: 5,
+          spreadRadius: 2,
+        )
+      ],
+      gradient: LinearGradient(
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+        colors: [Color(0xfffbb448), Color(0xfff7892b)],
       ),
-    );
+    ),
+    child: Text(
+      "Change Email",
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontSize: 20,
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+  ),
+);
 
     return Scaffold(
       

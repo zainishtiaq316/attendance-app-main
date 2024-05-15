@@ -502,6 +502,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           .createUserWithEmailAndPassword(email: email, password: password)
           .then((value) => {postDetailsToFirestore()})
           .catchError((e) {
+            Navigator.pop(context);
         Fluttertoast.showToast(msg: e!.message);
       });
     }
