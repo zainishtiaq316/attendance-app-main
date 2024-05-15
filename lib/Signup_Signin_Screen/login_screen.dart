@@ -1,7 +1,6 @@
 // ignore_for_file: body_might_complete_normally_catch_error
 
 import 'package:flutter/widgets.dart';
-import 'package:studentattendance/Admin/AdminBN.dart';
 import 'package:studentattendance/Admin/AdminHome.dart';
 import 'package:studentattendance/Signup_Signin_Screen/Forgot_Screen.dart';
 import 'package:studentattendance/Signup_Signin_Screen/signup_screen.dart';
