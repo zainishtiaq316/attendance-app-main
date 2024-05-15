@@ -136,25 +136,7 @@ class _markattState extends State<CheckInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: kPColor,
-        elevation: 0,
-        centerTitle: true,
-        title: const Text(
-          "Check In",
-          style: TextStyle(color: Colors.white),
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-          onPressed: () {
-            //passing this to a route
-            Navigator.of(context).pop();
-          },
-        ),
-      ),
-      body: FutureBuilder<bool>(
+    return FutureBuilder<bool>(
         // Pass your query function as the future argument
         future: checkAttendance(),
         // Define a builder function that returns a widget based on the state of the future
@@ -674,8 +656,8 @@ class _markattState extends State<CheckInScreen> {
             );
           }
         },
-      ),
-    );
+      )
+   ;
   }
 }
 

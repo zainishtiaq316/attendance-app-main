@@ -48,13 +48,15 @@ class _viewAttendanceState extends State<viewAttendance> {
                           width: MediaQuery.of(context).size.width * 0.5,
                           height: MediaQuery.of(context).size.height * 0.05,
                           decoration: BoxDecoration(
-                              color: Colors.green.shade800,
-                              borderRadius: BorderRadius.circular(30)),
+                              color: _selectedButton =="View Attendance"?Colors.green.shade800 : Colors.white,
+                              borderRadius: BorderRadius.circular(30),
+                              border: Border.all(color :Colors.green.shade800 ),
+                              ),
                           child: Center(
                               child: Text(
                             "Check In/Out",
                             style: TextStyle(
-                                color: Colors.white,
+                                color: _selectedButton =="View Attendance"?Colors.white : Colors.green.shade800,
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold),
                           )),
@@ -75,13 +77,15 @@ class _viewAttendanceState extends State<viewAttendance> {
                           width: MediaQuery.of(context).size.width * 0.5,
                           height: MediaQuery.of(context).size.height * 0.05,
                           decoration: BoxDecoration(
-                              color: Colors.red.shade800,
-                              borderRadius: BorderRadius.circular(30)),
+                              color: _selectedButton =="Leave Attendance"?Colors.red.shade800 : Colors.white,
+                              borderRadius: BorderRadius.circular(30),
+                              
+                                border: Border.all(color :Colors.red.shade800 ),),
                           child: Center(
                               child: Text(
                             "Leaves",
                             style: TextStyle(
-                                color: Colors.white,
+                               color: _selectedButton =="Leave Attendance"?Colors.white : Colors.red.shade800,
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold),
                           )),
@@ -439,4 +443,6 @@ class _viewAttendanceState extends State<viewAttendance> {
       ),
     );
   }
+
+
 }
