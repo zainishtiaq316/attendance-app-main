@@ -90,6 +90,7 @@ class _ChangeEmailScreenState extends State<ChangeEmail> {
         decoration: InputDecoration(
             contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
             hintText: "Email",
+            enabled: false,
             floatingLabelBehavior: FloatingLabelBehavior.never,
             hintStyle: TextStyle(color: Colors.grey.withOpacity(0.9)),
             border: InputBorder.none,

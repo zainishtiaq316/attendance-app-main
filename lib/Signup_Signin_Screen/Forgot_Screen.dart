@@ -1,5 +1,3 @@
-// ignore_for_file: body_might_complete_normally_catch_error
-
 import 'package:studentattendance/utils/color_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,10 +15,11 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   final _formKey = GlobalKey<FormState>();
-  final emailEditingController = new TextEditingController();
+  final emailEditingController = TextEditingController();
 
   final _auth = FirebaseAuth.instance;
-   Widget _backButton() {
+
+  Widget _backButton() {
     return InkWell(
       onTap: () {
         Navigator.pop(context);
@@ -41,10 +40,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
-    //email field
+    // email field
     final emailField = TextFormField(
       autofocus: false,
       obscureText: false,
@@ -58,53 +56,51 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         if (value!.isEmpty) {
           return ("Please Enter Your Email");
         }
-        //reg expression for email validation
+        // reg expression for email validation
         if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]").hasMatch(value)) {
           return ("Please Enter a valid email");
         }
         return null;
       },
       onSaved: (value) {
-        //new
         emailEditingController.text = value!;
       },
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-         
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Email",
-        
-          floatingLabelBehavior: FloatingLabelBehavior.never,
-          
-           hintStyle: TextStyle(color: Colors.grey.withOpacity(0.9)),
-           border: InputBorder.none,
-                  fillColor: Color(0xfff3f3f4),
-                  filled: true)
+        contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        hintText: "Email",
+        floatingLabelBehavior: FloatingLabelBehavior.never,
+        hintStyle: TextStyle(color: Colors.grey.withOpacity(0.9)),
+        border: InputBorder.none,
+        fillColor: Color(0xfff3f3f4),
+        filled: true,
+      ),
     );
 
-    //forgot button
-    final resetButon = GestureDetector(
-       onTap: () {
-          ForgotPassword(emailEditingController.text);
-        },
+    // reset button
+    final resetButton = GestureDetector(
+      onTap: () {
+        ForgotPassword(emailEditingController.text);
+      },
       child: Container(
         width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.symmetric(vertical: 15),
         alignment: Alignment.center,
         margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(5)),
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                  color: Colors.grey.shade200,
-                  offset: Offset(2, 4),
-                  blurRadius: 5,
-                  spreadRadius: 2)
-            ],
-            gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [Color(0xfffbb448), Color(0xfff7892b)])),
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+                color: Colors.grey.shade200,
+                offset: Offset(2, 4),
+                blurRadius: 5,
+                spreadRadius: 2)
+          ],
+          gradient: LinearGradient(
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: [Color(0xfffbb448), Color(0xfff7892b)]),
+        ),
         child: Text(
           "Reset",
           textAlign: TextAlign.center,
@@ -113,85 +109,91 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         ),
       ),
     );
-  final height = MediaQuery.of(context).size.height;
+
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
-     
       backgroundColor: Colors.white,
       body: Container(
-        //color: Colors.white,
         height: height,
         child: Stack(
-
           children: [
-             Positioned(
-              top: -height * .15,
-              right: -MediaQuery.of(context).size.width * .4,
-              child: BezierContainer()),
-              
+            Positioned(
+                top: -height * .15,
+                right: -MediaQuery.of(context).size.width * .4,
+                child: BezierContainer()),
             Container(
-
-               padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child: Form(
                 key: _formKey,
                 child: Column(
-                   crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(height: height * .2),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              height: 100,
-                              child: Image.asset(
-                                "assets/images/logo.png",
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 15),
-                        Expanded(child: SingleChildScrollView(child: Column(
-                          
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [Text(
-                          "Email",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 15),
-                        ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
                         SizedBox(
-                          height: 10,
+                          height: 100,
+                          child: Image.asset(
+                            "assets/images/logo.png",
+                            fit: BoxFit.contain,
+                          ),
                         ),
-                    emailField,
-                    SizedBox(height: 10),
-                    resetButon,
-                    SizedBox(height: 15),],),))
-                        
+                      ],
+                    ),
+                    SizedBox(height: 15),
+                    Expanded(
+                        child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Email",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          emailField,
+                          SizedBox(height: 10),
+                          resetButton,
+                          SizedBox(height: 15),
+                        ],
+                      ),
+                    ))
                   ],
                 ),
               ),
             ),
-              Positioned(top: 40, left: 0, child: _backButton()),
+            Positioned(top: 40, left: 0, child: _backButton()),
           ],
         ),
       ),
     );
   }
 
-//Forgot Function
+  // Forgot Function
   void ForgotPassword(String email) async {
     if (_formKey.currentState!.validate()) {
-      await _auth
-          .sendPasswordResetEmail(email: email)
-          .then((uid) => {
-                Fluttertoast.showToast(msg: "Email Sent !"),
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => LoginScreen()))
-              })
-          .catchError((e) {
-        Fluttertoast.showToast(msg: e!.message);
-      });
+      try {
+        await _auth.sendPasswordResetEmail(email: email);
+        Fluttertoast.showToast(msg: "Email Sent!");
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => LoginScreen()));
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found') {
+          Fluttertoast.showToast(msg: "No user found with this email.");
+        } else {
+          Fluttertoast.showToast(msg: e.message!);
+        }
+      } catch (e) {
+        Fluttertoast.showToast(msg: "An error occurred. Please try again.");
+      }
     }
   }
+
+
 }
