@@ -24,8 +24,8 @@ class DrawerWidget extends StatelessWidget {
   String? name = user?.displayName;
   String? imageUrl = user?.photoURL;
 
-    return  FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-      future: FirebaseFirestore.instance.collection('users').doc(user?.uid).get(),
+    return  StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+      stream: FirebaseFirestore.instance.collection('users').doc(user?.uid).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator(color: kPColor,)); // Loading indicator while fetching data

@@ -112,8 +112,8 @@ class _ViewAttendanceState extends State<viewAttendance> {
   }
 
   Widget buildViewAttendance() {
-    return FutureBuilder(
-      future: _fetchAttendanceData(),
+    return StreamBuilder(
+      stream: _fetchAttendanceData(),
       builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
         if (snapshot.hasError) {
           return Center(
@@ -246,141 +246,129 @@ class _ViewAttendanceState extends State<viewAttendance> {
     );
   }
 
-  Widget buildLeaveAttendance() {
-    return SingleChildScrollView(
-      child: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection("Confirmedleaves")
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .collection("attendance")
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
+ Widget buildLeaveAttendance() {
+  return StreamBuilder<QuerySnapshot>(
+    stream: FirebaseFirestore.instance
+        .collection("MarkAttendance")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("leaves")
+        .snapshots(),
+    builder: (context, snapshot) {
+      if (snapshot.hasError) {
+        return Center(child: Text('Error: ${snapshot.error}'));
+      }
 
-          if (!snapshot.hasData) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: kPColor,
-              ),
-            );
-          }
+      if (!snapshot.hasData) {
+        return Center(
+          child: CircularProgressIndicator(
+            color: kPColor,
+          ),
+        );
+      }
 
-          final confirmedLeavesDocs = snapshot.data!.docs;
+      final confirmedLeavesDocs = snapshot.data!.docs;
 
-          if (confirmedLeavesDocs.isEmpty) {
-            return Center(
-              child: Column(
-                children: [
-                  Text('No data found'),
-                ],
-              ),
-            );
-          }
+      if (confirmedLeavesDocs.isEmpty) {
+        return Center(
+          child: Text('No data found'),
+        );
+      }
 
-          return ListView.builder(
-            shrinkWrap: true,
-            itemCount: confirmedLeavesDocs.length,
-            itemBuilder: (context, index) {
-              final confirmedLeavesData =
-                  confirmedLeavesDocs[index].data() as Map<String, dynamic>;
-              final name = confirmedLeavesData['name'];
-              final rollNo = confirmedLeavesData['rollNo'];
-              final attendanceStatus = confirmedLeavesData['attendanceStatus'];
-              final currentDate = confirmedLeavesData['currentDate'];
-              final leave = confirmedLeavesData['time'];
+      return ListView.builder(
+        itemCount: confirmedLeavesDocs.length,
+        itemBuilder: (context, index) {
+          final confirmedLeavesData =
+              confirmedLeavesDocs[index].data() as Map<String, dynamic>;
+          final name = confirmedLeavesData['name'];
+          final rollNo = confirmedLeavesData['rollNo'];
+          final attendanceStatus = confirmedLeavesData['attendanceStatus'];
+          final currentDate = confirmedLeavesData['currentDate'];
+          final leave = confirmedLeavesData['time'];
 
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  child: InkWell(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: InkWell(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 10),
+                      Text(
+                        "Name: $name",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        "Roll No: $rollNo",
+                        style: TextStyle(color: Colors.black, fontSize: 15),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        "Attendance Status: $attendanceStatus",
+                        style: TextStyle(
+                            color: Colors.green.shade800, fontSize: 15),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        "Current Date: $currentDate",
+                        style: TextStyle(color: Colors.black, fontSize: 15),
+                      ),
+                      SizedBox(height: 10),
+                      Row(
                         children: [
-                          SizedBox(height: 10),
-                          Text(
-                            "Name: $name",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.1,
+                            height: MediaQuery.of(context).size.height * 0.04,
+                            child: Image.asset(
+                              "assets/images/leave.png",
+                              color: Colors.purple.shade800,
+                            ),
                           ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            "Roll No: $rollNo",
-                            style: TextStyle(color: Colors.black, fontSize: 15),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            "Attendance Status: $attendanceStatus",
-                            style: TextStyle(
-                                color: Colors.green.shade800, fontSize: 15),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            "Current Date: $currentDate",
-                            style: TextStyle(color: Colors.black, fontSize: 15),
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.1,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.04,
-                                child: Image.asset(
-                                  "assets/images/leave.png",
-                                  color: Colors.purple.shade800,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text("$leave",
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 15)),
-                            ],
-                          ),
-                          SizedBox(height: 10),
+                          SizedBox(width: 5),
+                          Text("$leave",
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 15)),
                         ],
                       ),
-                    ),
+                      SizedBox(height: 10),
+                    ],
                   ),
                 ),
-              );
-            },
+              ),
+            ),
           );
         },
-      ),
-    );
-  }
+      );
+    },
+  );
+}
 
-  Future<Map<String, dynamic>> _fetchAttendanceData() async {
+  Stream<Map<String, dynamic>> _fetchAttendanceData() async* {
     final checkInSnapshot = await FirebaseFirestore.instance
         .collection("MarkAttendance")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("CheckIn")
-        .get();
+        .snapshots();
 
     final checkOutSnapshot = await FirebaseFirestore.instance
         .collection("MarkAttendance")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("CheckOut")
-        .get();
+         .snapshots();
 
-    return {
-      'checkIn': checkInSnapshot.docs,
-      'checkOut': checkOutSnapshot.docs,
-    };
-  }
+   await for (final checkInData in checkInSnapshot) { // Changed await to await for
+    await for (final checkOutData in checkOutSnapshot) { // Changed await to await for
+      yield {
+        'checkIn': checkInData.docs,
+        'checkOut': checkOutData.docs,
+      };
+    }
+  
+   }}
 }

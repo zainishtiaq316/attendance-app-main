@@ -47,6 +47,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final passwordEditingController = new TextEditingController();
   final confirmpasswordEditingController = new TextEditingController();
   final photoUrlContainer = new TextEditingController();
+  final descriptionController = new TextEditingController();
 
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
@@ -192,100 +193,81 @@ class _SignUpScreenState extends State<SignUpScreen> {
           filled: true),
     );
 
-    //password field
-    final passwordField = TextFormField(
+    final descriptionField = TextFormField(
+      keyboardType: TextInputType.text,
       autofocus: false,
-      enableSuggestions: false,
-      autocorrect: false,
-      controller: passwordEditingController,
-      style: TextStyle(color: Colors.black45.withOpacity(0.9)),
+      obscureText: false,
+      enableSuggestions: true,
+      autocorrect: true,
       cursorColor: Colors.black45,
-      obscureText: _obscurePassword,
-     validator: (value) {
-        RegExp regex = new RegExp(r'^.{6,}$');
+      style: TextStyle(color: Colors.black45.withOpacity(0.9)),
+      controller: descriptionController,
+      enabled: true,
+      validator: (value) {
+        RegExp regex = new RegExp(r'^.{3,}$');
         if (value!.isEmpty) {
-          return ("Password is required for login");
+          return ("Description can't be Empty");
         }
         if (!regex.hasMatch(value)) {
-          return ("Enter Valid Password (Min. 6 Character)");
+          return ("Enter Description");
         }
         return null;
       },
       onSaved: (value) {
-        //new
-        passwordEditingController.text = value!;
+        descriptionController.text = value!;
       },
-
       textInputAction: TextInputAction.done,
+      maxLines: null, // Allows the field to expand vertically based on content
       decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Password",
-          suffixIcon: IconButton(
-            onPressed: () {
-              setState(() {
-                _obscurePassword =
-                    !_obscurePassword; // Toggle visibility
-              });
-            },
-            icon: Icon(
-              _obscurePassword ? Icons.visibility_off : Icons.visibility,
-            ),
-          ),
+          contentPadding: EdgeInsets.fromLTRB(20, 15, 30, 70),
+          hintText: "Message",
           floatingLabelBehavior: FloatingLabelBehavior.never,
           hintStyle: TextStyle(color: Colors.grey.withOpacity(0.9)),
           border: InputBorder.none,
           fillColor: Color(0xfff3f3f4),
           filled: true),
     );
-
-    //confirm password
-    final confirmpasswordField = TextFormField(
-      autofocus: false,
-      enableSuggestions: false,
-      autocorrect: false,
-      controller: confirmpasswordEditingController,
-      style: TextStyle(color: Colors.black45.withOpacity(0.9)),
-      cursorColor: Colors.black45,
-      obscureText: _obscureConfirmPassword,
-      validator: (value) {
-        if (confirmpasswordEditingController.text !=
-            passwordEditingController.text) {
-          return "Password don't match";
-        }
-        return null;
-      },
-      onSaved: (value) {
-        //new
-        confirmpasswordEditingController.text = value!;
-      },
-      textInputAction: TextInputAction.done,
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Confirm Password",
-          suffixIcon: IconButton(
-            onPressed: () {
-              setState(() {
-                _obscureConfirmPassword =
-                    !_obscureConfirmPassword; // Toggle visibility
-              });
-            },
-            icon: Icon(
-              _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
-            ),
-          ),
-          floatingLabelBehavior: FloatingLabelBehavior.never,
-          hintStyle: TextStyle(color: Colors.grey.withOpacity(0.9)),
-          border: InputBorder.none,
-          fillColor: Color(0xfff3f3f4),
-          filled: true),
-    );
-
     //signup button
     final signUpButon = GestureDetector(
-      onTap: () async {
-          await signUp(
-              emailEditingController.text, passwordEditingController.text);
-        },
+    onTap: () async {
+  // Validate form fields before sending data
+  if (_formKey.currentState!.validate()) {
+    // Save form fields
+    _formKey.currentState!.save();
+    try{
+      loader(context);
+
+    // Call function to send data to Firestore
+    await sendRegistrationDataToFirestore(
+      firstName: firstNameEditingController.text,
+      lastName: lastNameEditingController.text,
+      email: emailEditingController.text,
+      phoneNumber: phoneNumberEditingController.text,
+      message: descriptionController.text,
+    );
+
+    // Show a confirmation message or navigate to another screen
+    Fluttertoast.showToast(
+      msg: "Registration request sent successfully",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
+    );
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
+    }
+    catch(e){
+          Fluttertoast.showToast(
+      msg: "Error while sending request",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+    );
+    Navigator.pop(context);
+    
+    }
+  }},
       child: Container(
         width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.symmetric(vertical: 15),
@@ -304,7 +286,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 end: Alignment.centerRight,
                 colors: [Color(0xfffbb448), Color(0xfff7892b)])),
         child: Text(
-          "Sign Up",
+          "Send to Admin",
           textAlign: TextAlign.center,
           style: TextStyle(
               fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
@@ -363,7 +345,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
               right: -MediaQuery.of(context).size.width * .4,
               child: BezierContainer(),
             ),
-          
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Form(
@@ -372,12 +353,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    SizedBox(height: height * .2),
+                    SizedBox(height: height * .17),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
-                          height: 100,
+                          height: 80,
                           child: Image.asset(
                             "assets/images/logo.png",
                             fit: BoxFit.contain,
@@ -385,154 +366,168 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 10),
-                   Expanded(child: SingleChildScrollView(child: Column(
-                    
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
+                    SizedBox(height: 25,),
+                      Center(child: Text("Write Message to Admin for Registration", style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w500),)),
+                   
 
-                     Text(
-                        "First name",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      firstNameField,
-                      SizedBox(height: 10),
-                      Text(
-                        "Last name",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      lastNameField,
-                      SizedBox(height: 10),
-                      Text(
-                        "Email",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      emailField,
-                      SizedBox(height: 10),
-                      Text(
-                        "Phone number",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      phoneNumberField,
-                      SizedBox(height: 10),
-                      Text(
-                        "Password",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      passwordField,
-                      SizedBox(height: 10),
-                      Text(
-                        "Confirm password",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      confirmpasswordField,
-                      SizedBox(height: 20),
-                      signUpButon,
-                      SizedBox(height: 15),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text("Already have an account  "),
-                          
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => LoginScreen()));
-                            },
-                            child: Text(
-                              "Login ",
-                              style: TextStyle(
-                                  color: Color(0xffe46b10),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15),
-                            ),
+                   SizedBox(height: 25),
+                    Expanded(
+                        child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                           
+
+      
+                          Text(
+                            "First name",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          firstNameField,
+                          SizedBox(height: 10),
+                          Text(
+                            "Last name",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          lastNameField,
+                          SizedBox(height: 10),
+                          Text(
+                            "Email",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          emailField,
+                          SizedBox(height: 10),
+                          Text(
+                            "Phone number",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          phoneNumberField,
+                          SizedBox(height: 10),
+                          Text(
+                            "Message",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          descriptionField,
+                          SizedBox(height: 20),
+                          signUpButon,
+                          SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text("Already have an account  "),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => LoginScreen()));
+                                },
+                                child: Text(
+                                  "Login ",
+                                  style: TextStyle(
+                                      color: Color(0xffe46b10),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 30,
                           )
-,
-                          
                         ],
                       ),
-                      SizedBox(height: 20,)
-                    
-                   ],),))
+                    ))
                   ],
                 ),
               ),
             ),
             Positioned(top: 40, left: 0, child: _backButton()),
-          
           ],
         ),
       ),
     );
   }
 
-  //signup function
-  Future<void> signUp(String email, String password) async {
-    if (_formKey.currentState!.validate()) {
-      loader(context);
-      await getFirebaseMessagingToken();
-      await _auth
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .then((value) => {postDetailsToFirestore()})
-          .catchError((e) {
-            Navigator.pop(context);
-        Fluttertoast.showToast(msg: e!.message);
-      });
-    }
-  }
 
-  postDetailsToFirestore() async {
-    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-    User? user = _auth.currentUser;
-    UserModel userModel = UserModel();
+  Future<void> sendRegistrationDataToFirestore({
+  required String firstName,
+  required String lastName,
+  required String email,
+  required String phoneNumber,
+  required String message,
+}) async {
+  try {
+    // Access Firestore collection
+    CollectionReference users = FirebaseFirestore.instance.collection('userRegistrationRequests');
 
-    //writing all values
-    userModel.email = user!.email;
-    userModel.uid = user.uid;
-    userModel.firstName = firstNameEditingController.text;
-    userModel.secondName = lastNameEditingController.text;
-    userModel.phoneNumber = phoneNumberEditingController.text;
-    userModel.photoURL = photoUrlContainer.text;
-    userModel.role = "User";
-    userModel.token = token;
-    // userModel.notifications = [];
-    await FirebaseAuth.instance.currentUser!
-        .updateDisplayName("${firstNameEditingController.text}");
-    await firebaseFirestore
-        .collection("users")
-        .doc(user.uid)
-        .set(userModel.toMap());
-    Fluttertoast.showToast(msg: "Successful SignUp, please Signin");
-    Navigator.pushAndRemoveUntil(
-        (context),
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-        (route) => false);
+    // Add user data to Firestore
+    await users.add({
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      'phoneNumber': phoneNumber,
+      'message': message,
+      // Add more fields if needed
+      // 'timestamp': FieldValue.serverTimestamp(),
+    });
+ print("Success");
+
+      } catch(e){
+         Navigator.pop(context);
+        print("Fail");
+    // Handle error
   }
+}
+
+  // //signup function
+  // Future<void> sendMessage(String firstName, String lastName, String email, String phoneNumber, String message) async {
+  //   if (_formKey.currentState!.validate()) {
+  //     loader(context);
+  //     try{
+  //       CollectionReference users = FirebaseFirestore.instance.collection('usersRequest');
+  //       // Add user data to Firestore
+  //   await users.add({
+  //     'firstName': firstName,
+  //     'lastName': lastName,
+  //     'email': email,
+  //     'phoneNumber': phoneNumber,
+  //     'message': message,
+  //     // Add more fields if needed
+  //     // 'timestamp': FieldValue.serverTimestamp(),
+  //   });
+ 
+  //       Fluttertoast.showToast(msg: "Registration Request Send to Admin !");
+
+  //     } catch(e){
+  //        Navigator.pop(context);
+  //       Fluttertoast.showToast(msg: "Error found while sending data to admin!");
+
+  //     };
+      
+      
+  //   }
+  // }
+
 }

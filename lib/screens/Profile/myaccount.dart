@@ -93,11 +93,11 @@ class _AccountInfoState extends State<AccountInfo> {
             },
           ),
         ),
-        body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-            future: FirebaseFirestore.instance
+        body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+            stream: FirebaseFirestore.instance
                 .collection('users')
                 .doc(user?.uid)
-                .get(),
+                .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(

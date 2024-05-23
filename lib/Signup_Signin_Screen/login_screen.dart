@@ -364,7 +364,7 @@ bool _obscurePassword = true;
                                       builder: (context) => SignUpScreen()));
                             },
                             child: Text(
-                              "Sign Up ",
+                              " Contact Admin",
                               style: TextStyle(
                                   color: Color(0xffe46b10),
                                   fontWeight: FontWeight.bold,
