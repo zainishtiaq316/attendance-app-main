@@ -19,7 +19,8 @@ import 'leaveattendance.dart';
 import 'markattendancee.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({Key? key}) : super(key: key);
+  String name;
+  HomeScreen({Key? key, required this.name}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -86,172 +87,184 @@ String _getString() {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-              children: [
-                Text(
-                  "${_getString()}, ",
-                  style: GoogleFonts.montserrat(
-                    color: Colors.black.withOpacity(0.7),
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  "${user!.displayName}",
-                  style: GoogleFonts.montserrat(
-                    color: Colors.black.withOpacity(0.7),
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+    return Container(
+     decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.orange.shade400, Colors.blue.shade900,  Colors.orange.shade300],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
-            
-            const SizedBox(height: 20.0),
-            Container(
-              padding:
-                  EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 20),
-              decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(10)),
-              child: Column(children: [tableCalender()]),
-            ),
-            const SizedBox(height: 20.0),
-            Container(
-              width: double.infinity,
-              child: Image.asset(
-                "assets/images/attendance.png",
-                height: 200,
+          ),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    "${_getString()}, ",
+                    style: GoogleFonts.montserrat(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    "${widget.name}",
+                    style: GoogleFonts.montserrat(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                GestureDetector(
-                  onTap: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => markatt(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.4,
-                    height: MediaQuery.of(context).size.height * 0.165,
-                    decoration: BoxDecoration(
-                        color: Colors.green.shade800,
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.1,
-                          height: MediaQuery.of(context).size.height * 0.04,
-                          child: Image.asset(
-                            "assets/images/checkin.png",
-                            color: Colors.white,
+              
+              const SizedBox(height: 20.0),
+              Container(
+                padding:
+                    EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 20),
+                decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(10)),
+                child: Column(children: [tableCalender()]),
+              ),
+              const SizedBox(height: 20.0),
+              Container(
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height*0.2,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  image: DecorationImage(image: AssetImage("assets/images/attendance.png", ), fit: BoxFit.cover)
+                ),
+               
+              ),
+              SizedBox(height: 40,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => markatt(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      height: MediaQuery.of(context).size.height * 0.165,
+                      decoration: BoxDecoration(
+                          color: Colors.green.shade800,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.1,
+                            height: MediaQuery.of(context).size.height * 0.04,
+                            child: Image.asset(
+                              "assets/images/checkin.png",
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                            width: MediaQuery.of(context).size.width * 0.3,
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Mark",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                Text(
-                                  "Attendance",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ],
-                            ))
-                      ],
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                              width: MediaQuery.of(context).size.width * 0.3,
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "Mark",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  Text(
+                                    "Attendance",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ],
+                              ))
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => leaveAttendance(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.4,
-                    height: MediaQuery.of(context).size.height * 0.165,
-                    decoration: BoxDecoration(
-                        color: Colors.red.shade800,
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.1,
-                          height: MediaQuery.of(context).size.height * 0.04,
-                          child: Image.asset(
-                            "assets/images/leave.png",
-                            color: Colors.white,
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => leaveAttendance(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      height: MediaQuery.of(context).size.height * 0.165,
+                      decoration: BoxDecoration(
+                          color: Colors.red.shade800,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.1,
+                            height: MediaQuery.of(context).size.height * 0.04,
+                            child: Image.asset(
+                              "assets/images/leave.png",
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                            width: MediaQuery.of(context).size.width * 0.3,
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Mark",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                Text(
-                                  "Leave",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ],
-                            ))
-                      ],
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                              width: MediaQuery.of(context).size.width * 0.3,
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "Mark",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  Text(
+                                    "Leave",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ],
+                              ))
+                        ],
+                      ),
                     ),
                   ),
-                ),
-
-               
-               
-                
-              ],
-            ),
-            SizedBox(height: 20),
-            SizedBox(
-              height: 80,
-            )
-          ],
+      
+                 
+                 
+                  
+                ],
+              ),
+              SizedBox(height: 20),
+              SizedBox(
+                height: 80,
+              )
+            ],
+          ),
         ),
       ),
     );

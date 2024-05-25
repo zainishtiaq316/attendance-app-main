@@ -17,97 +17,107 @@ class _ViewAttendanceState extends State<viewAttendance> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                "View Attendance",
-                style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 30,
-                    fontWeight: FontWeight.w700),
-              ),
-              SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedButton = 'View Attendance';
-                        });
-                      },
-                      child: Container(
-                        height: MediaQuery.of(context).size.height * 0.05,
-                        decoration: BoxDecoration(
-                          color: _selectedButton == "View Attendance"
-                              ? Colors.green.shade800
-                              : Colors.white,
-                          borderRadius: BorderRadius.circular(30),
-                          border: Border.all(color: Colors.green.shade800),
-                        ),
-                        child: Center(
-                            child: Text(
-                          "Check In/Out",
-                          style: TextStyle(
-                              color: _selectedButton == "View Attendance"
-                                  ? Colors.white
-                                  : Colors.green.shade800,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold),
-                        )),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 15),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedButton = 'Leave Attendance';
-                        });
-                      },
-                      child: Container(
-                        height: MediaQuery.of(context).size.height * 0.05,
-                        decoration: BoxDecoration(
-                          color: _selectedButton == "Leave Attendance"
-                              ? Colors.red.shade800
-                              : Colors.white,
-                          borderRadius: BorderRadius.circular(30),
-                          border: Border.all(color: Colors.red.shade800),
-                        ),
-                        child: Center(
-                            child: Text(
-                          "Leaves",
-                          style: TextStyle(
-                              color: _selectedButton == "Leave Attendance"
-                                  ? Colors.white
-                                  : Colors.red.shade800,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold),
-                        )),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ],
+    return Container(
+      height: MediaQuery.of(context).size.height,
+       decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.orange.shade400, Colors.blue.shade900,  Colors.orange.shade300],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
           ),
-        ),
-        Expanded(
-          child: _selectedButton == 'View Attendance'
-              ? buildViewAttendance()
-              : buildLeaveAttendance(),
-        ),
-        SizedBox(height: 80)
-      ],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  "View Attendance",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      fontWeight: FontWeight.w700),
+                ),
+                SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedButton = 'View Attendance';
+                          });
+                        },
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * 0.05,
+                          decoration: BoxDecoration(
+                            color: _selectedButton == "View Attendance"
+                                ? Colors.green.shade800
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(30),
+                            border: Border.all(color: Colors.green.shade800),
+                          ),
+                          child: Center(
+                              child: Text(
+                            "Check In/Out",
+                            style: TextStyle(
+                                color: _selectedButton == "View Attendance"
+                                    ? Colors.white
+                                    : Colors.green.shade800,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold),
+                          )),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 15),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedButton = 'Leave Attendance';
+                          });
+                        },
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * 0.05,
+                          decoration: BoxDecoration(
+                            color: _selectedButton == "Leave Attendance"
+                                ? Colors.red.shade800
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(30),
+                            border: Border.all(color: Colors.red.shade800),
+                          ),
+                          child: Center(
+                              child: Text(
+                            "Leaves",
+                            style: TextStyle(
+                                color: _selectedButton == "Leave Attendance"
+                                    ? Colors.white
+                                    : Colors.red.shade800,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold),
+                          )),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: _selectedButton == 'View Attendance'
+                ? buildViewAttendance()
+                : buildLeaveAttendance(),
+          ),
+          SizedBox(height: 80)
+        ],
+      ),
     );
   }
 
@@ -134,7 +144,7 @@ class _ViewAttendanceState extends State<viewAttendance> {
 
         if (checkInDocs.isEmpty) {
           return Center(
-            child: Text('No check-in data found'),
+            child: Text('No check-in data found', style: TextStyle(color: Colors.white),),
           );
         }
 
@@ -270,7 +280,7 @@ class _ViewAttendanceState extends State<viewAttendance> {
 
       if (confirmedLeavesDocs.isEmpty) {
         return Center(
-          child: Text('No data found'),
+          child: Text('No data found', style : TextStyle(color: Colors.white)),
         );
       }
 

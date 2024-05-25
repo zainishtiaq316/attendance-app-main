@@ -21,7 +21,6 @@ class DrawerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
  
-  String? name = user?.displayName;
   String? imageUrl = user?.photoURL;
 
     return  StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
@@ -49,7 +48,13 @@ class DrawerWidget extends StatelessWidget {
             child: Column(
               children: [
                 Container(
-                  color: Color(0xfff7892b),
+                  decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.orange.shade400, Colors.blue.shade900,  Colors.orange.shade300],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * 0.32,
                   child: Padding(
@@ -64,7 +69,7 @@ class DrawerWidget extends StatelessWidget {
                             backgroundColor: Colors.white,
                           backgroundImage: imageUrl != null ? NetworkImage(imageUrl) : null,
                         child: imageUrl == null ? Text(
-                          name != null ? name[0].toUpperCase() : "",
+                          firstName != null ? firstName[0].toUpperCase() : "",
                           style: TextStyle(
                             color: Colors.black,
                           ),
@@ -295,7 +300,9 @@ class DrawerWidget extends StatelessWidget {
           backgroundColor: Colors.grey.shade400),
     );}
       },
-    );}
+    );
+    
+    }
 
     Future<void> logout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();

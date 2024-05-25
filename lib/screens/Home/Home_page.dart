@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -22,7 +23,7 @@ class HomePageView extends StatefulWidget {
 
 class _HomePageViewState extends State<HomePageView> {
   final _pageControlller = PageController();
-   User? user = FirebaseAuth.instance.currentUser;
+  User? user = FirebaseAuth.instance.currentUser;
 
   UserModel loggedInUser = UserModel();
   late FocusNode myFocusNode;
@@ -44,6 +45,7 @@ class _HomePageViewState extends State<HomePageView> {
     _firstDay = currentDate.subtract(Duration(days: currentDate.weekday - 1));
     _lastDay = _firstDay.add(Duration(days: 6));
   }
+
   Future<bool> onWillPop() async {
     // myFocusNode.unfocus();
     DateTime now = DateTime.now();
@@ -56,39 +58,56 @@ class _HomePageViewState extends State<HomePageView> {
       });
       return Future.value(false);
     }
-     await FirebaseAuth.instance.signOut();
+    await FirebaseAuth.instance.signOut();
     Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => SplashScreen()));
 
     return Future.value(true);
   }
-  
 
   @override
   void dispose() {
     super.dispose();
     _pageControlller.dispose();
-     myFocusNode.dispose();
+    myFocusNode.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-     String? name = user?.displayName;
+    String? name = user?.displayName;
     String? imageUrl = user?.photoURL;
     return WillPopScope(
-      onWillPop: onWillPop,
-      child: Scaffold(
-        backgroundColor: Colors.white,
+        onWillPop: onWillPop,
+        child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+          stream: FirebaseFirestore.instance
+              .collection('users')
+              .doc(user?.uid)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                  child: Container()); // Loading indicator while fetching data
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              Map<String, dynamic>? userData = snapshot.data?.data();
+              String? firstName = userData?['firstName'];
+              String? SecondName = userData?['secondName'];
+              String? email = userData?['email'];
+
+              return  Scaffold(
+        
         drawer: DrawerWidget(),
             appBar: AppBar(
-            backgroundColor: Colors.white,
-            surfaceTintColor: Colors.white,
+            backgroundColor: Colors.orange.shade400,
+            surfaceTintColor: Colors.orange.shade400,
             centerTitle: true,
             actionsIconTheme: IconThemeData(color: Colors.blue),
             title: Text(
               "Attend easy",
               style: GoogleFonts.montserrat(
                 fontWeight: FontWeight.bold,
-                color: kPColor,
+                color: Colors.white,
               ),
             ),
             actions: [
@@ -104,7 +123,7 @@ class _HomePageViewState extends State<HomePageView> {
                     backgroundImage: imageUrl != null ? NetworkImage(imageUrl) : null,
                     child: imageUrl == null
                         ? Text(
-                            name != null ? name[0].toUpperCase() : "",
+                            firstName != null ? firstName[0].toUpperCase() : "",
                             style: TextStyle(
                               color: Colors.black,
                             ),
@@ -119,14 +138,14 @@ class _HomePageViewState extends State<HomePageView> {
       body: PageView(
             controller: _pageControlller,
             children:  <Widget>[
-              HomeScreen(),
+              HomeScreen(name: userData?['firstName'],),
               viewAttendance(),
          
             ],
           ),
           extendBody: true,
           bottomNavigationBar: RollingBottomBar(
-            color: Colors.orange.shade100,
+            color: Colors.deepPurple.shade700,
             controller: _pageControlller,
             flat: true,
             useActiveColorByDefault: false,
@@ -148,7 +167,9 @@ class _HomePageViewState extends State<HomePageView> {
             },
           ),
         
-      ),
-    );
+      );
+            }
+          },
+        ));
   }
 }
